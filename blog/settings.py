@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myblogapp321.wsgi.application'
+WSGI_APPLICATION = 'blog.wsgi.application'
 
 
 # Database
