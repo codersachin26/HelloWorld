@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
@@ -13,23 +14,116 @@
 
   <!-- Links -->
   <ul class="navbar-nav">
+    
+    <div class="web-title">
+    <h2>MyBlogApp</h2><br>
+  </div>
     <li class="nav-item">
-      <a class="nav-link" href="#">Link 1</a>
+      <a class="nav-link" href="#">Home</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Link 2</a>
+      <a class="nav-link" href="#">About</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Link 3</a>
+      <a class="nav-link" href="#">Contact</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">All Blog</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">New Blog</a>
     </li>
   </ul>
 
 </nav>
 
-    <h1>Wellcome to my blog</h1>
-    <p>Search Results
+<div class="container">
+
+  <div class="left-container">
+    <div class="title">
+    <h2>Django: The Web framework for perfectionists with deadlines </h2>
+    <h4>2020 Aug</h4>
+  </div>
+    <div class="article">
+
+      <div class="article-img"> <img src="Django.jpg" alt="img"></div>
+
+      <p> Django is a fully featured Python web framework that can be used to build complex web applications. In this tutorial, you’ll jump in and learn Django by example. You’ll follow the steps to create a fully functioning web application and, along the way, learn some of the most important features of the framework and how they work together.
+
+        In later posts in this series, you’ll see how to build more complex websites using even more of Django’s features than you’ll cover in this tutorial.
         
-      <h2>  Django: The Web framework for perfectionists with deadlines </h2>
-        Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, it takes care of much of the hassle of Web development, so you can focus on writing your app without needing to reinvent the wheel. It's free and open source.</p>
+        By the end of this tutorial, you will be able to:
+        
+        Understand what Django is and why it’s a great web framework
+        Understand the architecture of a Django site and how it compares with other frameworks
+        Set up a new Django project and app
+        Build a Personal Portfolio Website with Django</p>
+
+
+    </div>
+
+
+
+  </div>
+  <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
+  <div class="right-container">
+    <div class="author-img"> <img src="sachin.jpg" alt=""></div>
+    <div class="author-info">
+      <h2>Sachin </h2>
+     <h4>Sachin is Django Web Developer in big MNCs</h4>
+       <h4>INDIA</h4>
+       <span class="social-link">Instagram</span>
+       <span class="social-link">Github</span>
+       <span class="social-link">Linkedin</span>
+      </div>
+    
+   
+
+  </div>
+
+  <div class="cmt-box">
+
+    <h1>COMMENTS</h1>
+    <hr>
+
+    <div class="user-cmts">
+
+      <div class="user-cmt-box">
+        <div class="user-img"> <img src="sachin.jpg" alt=""></div>
+        <div class="user-msg">
+        <h2>Sachin Kumarr</h2>
+        <h6 style="font-style: italic;">2Aug2020</h6>
+        <div style="margin-right: 20px;">this is a nice blog this is a nice blogthis is a nice blogthis is a nice blogthis is a nice blog</div>
+      </div>
+      </div>
+      </div>
+
+      <div class="cmt-form">
+        <h1>Add Comments</h1>
+          
+        <form action="user_cmt" method="POST">
+        <input type="text"  name="user-name" placeholder="Enter you name"><br>
+        <input type="email" name="email" placeholder="Enter Email ID"><br>
+        <input type="text" name="user-msg" placeholder="your msg"><br>
+        <button type="submit">ADD</button>
+
+      </form>
+
+      </div>
+
+    </div>
+
+    <!-- <div class="cmt-form">
+
+    </div> -->
+    
+  </div>
+
+
+
+  
+
+
+
 </body>
 </html>
