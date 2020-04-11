@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{% static 'style.css'%}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
@@ -46,7 +47,7 @@
   </div>
     <div class="article">
 
-      <div class="article-img"> <img src="Django.jpg" alt="img"></div>
+      <div class="article-img"> <img src="{% static 'Django.jpg'%}" alt="img"></div>
 
       <p> Django is a fully featured Python web framework that can be used to build complex web applications. In this tutorial, you’ll jump in and learn Django by example. You’ll follow the steps to create a fully functioning web application and, along the way, learn some of the most important features of the framework and how they work together.
 
@@ -67,7 +68,7 @@
   </div>
   <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
   <div class="right-container">
-    <div class="author-img"> <img src="sachin.jpg" alt=""></div>
+    <div class="author-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
     <div class="author-info">
       <h2>Sachin </h2>
      <h4>Sachin is Django Web Developer in big MNCs</h4>
@@ -89,7 +90,7 @@
     <div class="user-cmts">
 
       <div class="user-cmt-box">
-        <div class="user-img"> <img src="sachin.jpg" alt=""></div>
+        <div class="user-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
         <div class="user-msg">
         <h2>Sachin Kumarr</h2>
         <h6 style="font-style: italic;">2Aug2020</h6>
@@ -106,18 +107,18 @@
         <input type="email" name="email" placeholder="Enter Email ID"><br>
         <input type="text" name="user-msg" placeholder="your msg"><br>
         <button type="submit">ADD</button>
-
+        
       </form>
+    
 
       </div>
 
     </div>
-
-    <!-- <div class="cmt-form">
-
-    </div> -->
     
   </div>
+
+
+ 
 
 
 
