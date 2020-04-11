@@ -10,3 +10,6 @@ from django import forms
 def index(request):
     return render(request,'index.html')
 
+def author_login(request):
+    	pass
+
