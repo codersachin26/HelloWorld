@@ -1,39 +1,51 @@
 from django.db import models
 from django.utils import timezone
-from datetime import time
-
-# Create your models here.
-
-class Users(models.Model):
-    username = models.CharField(max_length=25)
-    email_id = models.EmailField()
-    profile_pic = models.ImageField(upload_to='user_pic/')
-    password = models.CharField(max_length=30)
-
-    def __str__(self):
-        return 'user '+self.username
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
+from .managers import CustomUserManager
 
 
-class Author(models.Model):
-    f_name = models.CharField(max_length=20)
-    s_name = models.CharField(max_length=20)
-    email_id = models.EmailField()
-    occupation = models.CharField(max_length=50)
-    country = models.CharField(max_length=15)
-    gitgub_address = models.CharField(max_length=30)
-    linkedin_address = models.CharField(max_length=30)
-    password = models.CharField(max_length=25)
-    profile_pic = models.ImageField(upload_to='author_pic/')
+
+
+
+class MyUser(AbstractBaseUser,PermissionsMixin):
+    f_name = models.CharField(max_length=20,null=True)
+    s_name = models.CharField(max_length=20,null=True)
+    email = models.CharField(max_length=40, unique=True)
+    username = models.CharField(max_length=25,unique=True)
+    profile_pic = models.ImageField(upload_to='user_pic')
+    date_joined = models.DateField(default=timezone.now)
+    occupation = models.CharField(max_length=50,null=True)
+    country = models.CharField(max_length=15,null=True)
     authorise = models.BooleanField(default=False)
+    github_address = models.CharField(max_length=30,null=True)
+    linkedin_address = models.CharField(max_length=30,null=True)
+    is_active = models.BooleanField(default=True)   
+    is_author = models.BooleanField(default=False) 
+    is_user = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    password = models.CharField(max_length=25)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def __str__(self):
-        return 'Author '+self.f_name+' '+self.s_name+' '+self.authorise
+        if self.is_author:
+            return 'Author '+self.f_name+' '+self.s_name+str(self.authorise)
+        elif self.is_user:
+            return 'User '+self.username
+        else:
+            return self.email
+
+
+
+
 
 
 
 
 class Article(models.Model):
-    author = models.ForeignKey('Author',models.CASCADE,null=True)
     authorID = models.IntegerField()
     author_name = models.CharField(max_length=25)
     title = models.CharField(max_length=50)

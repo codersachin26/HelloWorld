@@ -20,4 +20,5 @@ from blog_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
+    path('user_register',views.user_register),
 ]
