@@ -5,6 +5,9 @@ from .managers import CustomUserManager
 
 
 
+class Test1(models.Model):
+    name = models.CharField(max_length=25)
+    
 
 
 class MyUser(AbstractBaseUser,PermissionsMixin):

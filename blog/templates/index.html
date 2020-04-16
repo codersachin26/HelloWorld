@@ -11,6 +11,7 @@
 <body>
 
 <!-- A grey horizontal navbar that becomes vertical on small screens -->
+<header>
 <nav class="navbar navbar-expand-sm bg-light">
 
   <!-- Links -->
@@ -34,9 +35,24 @@
     <li class="nav-item">
       <a class="nav-link" href="#">New Blog</a>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="#">{{user}}</a>
+    </li>
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+      <a class="nav-link" href="logout">Logout</a>
+    </li>
+    {%else%}
+    <li class="nav-item">
+      <a class="nav-link" href="login">Login</a>
+    </li>
+
+    {%endif%}
   </ul>
 
 </nav>
+</header>
 
 <div class="container">
 
@@ -116,9 +132,6 @@
     </div>
     
   </div>
-
-
- 
 
 
 
