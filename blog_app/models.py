@@ -5,8 +5,7 @@ from .managers import CustomUserManager
 
 
 
-class Test1(models.Model):
-    name = models.CharField(max_length=25)
+
     
 
 
@@ -35,11 +34,11 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         if self.is_author:
-            return 'Author '+self.f_name+' '+self.s_name+str(self.authorise)
+            return 'Author '+self.username
         elif self.is_user:
             return 'User '+self.username
         else:
-            return self.email
+            return self.username
 
 
 
@@ -63,3 +62,12 @@ class Article(models.Model):
 
 
 
+class UserComments(models.Model):
+    article = models.ForeignKey('Article',on_delete=models.CASCADE)
+    u_msg = models.CharField(max_length=200)
+    u_Email = models.EmailField()
+    u_name = models.CharField(max_length=25)
+    cmt_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.U_name

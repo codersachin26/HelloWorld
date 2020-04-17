@@ -21,7 +21,7 @@
     <h2>MyBlogApp</h2><br>
   </div>
     <li class="nav-item">
-      <a class="nav-link" href="#">Home</a>
+      <a class="nav-link" href="\">Home</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">About</a>
@@ -43,9 +43,18 @@
     <li class="nav-item">
       <a class="nav-link" href="logout">Logout</a>
     </li>
+    {% if user.is_author %}
+    <li class="nav-item">
+      <a class="nav-link" href="author_dashboard">DashBoard</a>
+    </li>
+    {%endif%}
+
     {%else%}
     <li class="nav-item">
       <a class="nav-link" href="login">Login</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/user_register">New User?</a>
     </li>
 
     {%endif%}
@@ -55,6 +64,8 @@
 </header>
 
 <div class="container">
+
+  {% block body%}
 
   <div class="left-container">
     <div class="title">
@@ -119,9 +130,7 @@
         <h1>Add Comments</h1>
           
         <form action="user_cmt" method="POST">
-        <input type="text"  name="user-name" placeholder="Enter you name"><br>
-        <input type="email" name="email" placeholder="Enter Email ID"><br>
-        <input type="text" name="user-msg" placeholder="your msg"><br>
+         <textarea name="cmt-mag" cols="30" rows="5"></textarea><br>
         <button type="submit">ADD</button>
         
       </form>
@@ -130,6 +139,7 @@
       </div>
 
     </div>
+    {%endblock%}
     
   </div>
 

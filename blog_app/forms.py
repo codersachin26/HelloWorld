@@ -1,10 +1,10 @@
 from django import forms
-from .models import MyUser,Test1
+from .models import MyUser
 
 class MyUserForm(forms.ModelForm):
     class Meta:
         model = MyUser
-        fields = ['f_name','s_name','username','occupation','country','is_author','email','password']
+        fields = ['username','email','password','is_author']
 
 class LoginForm(forms.ModelForm):
     class Meta:
