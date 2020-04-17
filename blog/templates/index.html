@@ -47,6 +47,11 @@
     <li class="nav-item">
       <a class="nav-link" href="author_dashboard">DashBoard</a>
     </li>
+    {% else %}
+    <li class="nav-item">
+      <a class="nav-link" href="/author_register">Are You Author?</a>
+    </li>
+
     {%endif%}
 
     {%else%}
@@ -55,6 +60,9 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="/user_register">New User?</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/author_register">New Author?</a>
     </li>
 
     {%endif%}
@@ -69,23 +77,14 @@
 
   <div class="left-container">
     <div class="title">
-    <h2>Django: The Web framework for perfectionists with deadlines </h2>
-    <h4>2020 Aug</h4>
+    <h2>{{new_blog.title}}</h2>
+    <h4>{{new_blog.upload_date}}</h4>
   </div>
     <div class="article">
 
       <div class="article-img"> <img src="{% static 'Django.jpg'%}" alt="img"></div>
 
-      <p> Django is a fully featured Python web framework that can be used to build complex web applications. In this tutorial, you’ll jump in and learn Django by example. You’ll follow the steps to create a fully functioning web application and, along the way, learn some of the most important features of the framework and how they work together.
-
-        In later posts in this series, you’ll see how to build more complex websites using even more of Django’s features than you’ll cover in this tutorial.
-        
-        By the end of this tutorial, you will be able to:
-        
-        Understand what Django is and why it’s a great web framework
-        Understand the architecture of a Django site and how it compares with other frameworks
-        Set up a new Django project and app
-        Build a Personal Portfolio Website with Django</p>
+      <p> {{new_blog.content}}</p>
 
 
     </div>
@@ -97,7 +96,7 @@
   <div class="right-container">
     <div class="author-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
     <div class="author-info">
-      <h2>Sachin </h2>
+      <h2>{{user.username}}</h2>
      <h4>Sachin is Django Web Developer in big MNCs</h4>
        <h4>INDIA</h4>
        <span class="social-link">Instagram</span>

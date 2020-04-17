@@ -19,7 +19,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
     occupation = models.CharField(max_length=50,null=True)
     country = models.CharField(max_length=15,null=True)
     authorise = models.BooleanField(default=False)
-    github_address = models.CharField(max_length=30,null=True)
+    github_address = models.CharField(max_length=50,null=True)
     linkedin_address = models.CharField(max_length=30,null=True)
     is_active = models.BooleanField(default=True)   
     is_author = models.BooleanField(default=False) 
@@ -48,17 +48,17 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
 
 
 class Article(models.Model):
-    authorID = models.IntegerField()
-    author_name = models.CharField(max_length=25)
+    authorID = models.IntegerField(blank=True)
+    author_name = models.CharField(blank=True,max_length=25)
     title = models.CharField(max_length=50)
     thumbnail = models.ImageField(upload_to='thumbnail_img/')
-    upload_date = models.DateTimeField(default=timezone.now)
+    upload_date = models.DateTimeField(blank=True,default=timezone.now)
     category = models.CharField(max_length=30)
     content = models.CharField(max_length=5000)
-    accessible = models.BooleanField(default=False)
+    accessible = models.BooleanField(blank=True,default=False)
 
     def __str__(self):
-        return 'ID '+self.author_id+' '+self.title
+        return self.author_name+' '+self.title +' '+str(self.accessible)
 
 
 

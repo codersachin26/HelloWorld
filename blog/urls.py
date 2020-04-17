@@ -27,6 +27,8 @@ urlpatterns = [
     path('logout',views.user_logout),
     path('author_dashboard',views.author_dashboard),
     path('add_cmt/<int:id>',views.add_cmt),
+    path('new_article',views.new_article),
+    path('author_register',views.author_register),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,Http404
-from .forms import MyUserForm,LoginForm
+from .forms import MyUserForm,LoginForm,ArticleForm,MyAuthorForm
 from .models import *
 from django.contrib.auth import authenticate,login,logout
 
@@ -13,8 +13,9 @@ from django.contrib.auth import authenticate,login,logout
 # Create your views here.
 
 def index(request):
+    new_blog = Article.objects.first()
     user = request.user
-    return render(request,'index.html',{'user':user})
+    return render(request,'index.html',{'user':user,'new_blog':new_blog})
 
 def author_dashboard(request):
     if request.user.is_author:
@@ -48,6 +49,7 @@ def user_register(request):
         if form.is_valid():
             user=form.save(commit=False)
             user.set_password(password)
+            user.is_user = True
             user.save()
             login(request,user)
             return redirect('/')
@@ -57,6 +59,30 @@ def user_register(request):
     else:
         form = MyUserForm()
         return render(request,'user_register.html',{'form':form})
+
+
+def author_register(request):
+    if request.method == 'POST':
+        new_user = MyUser()
+        password = request.POST['password']
+        new_user.set_password(password)
+        new_user.username = request.POST['username']
+        new_user.email = request.POST['email']
+        new_user.profile_pic = request.POST['profile_pic']
+        new_user.f_name = request.POST['f_name']
+        new_user.s_name = request.POST['s_name']
+        new_user.occupation = request.POST['occupation']
+        new_user.country = request.POST['country']
+        new_user.github_address = request.POST['github_address']
+        new_user.linkedin_address = request.POST['linkedin_address'] 
+        new_user.is_author = True
+        new_user.save()
+        login(request,new_user)
+        return redirect('/')
+        
+    else:
+        form = MyAuthorForm()
+        return render(request,'author_register.html',{'form':form})
 
         
 
@@ -71,6 +97,27 @@ def add_cmt(request,id):
 
     else:
         raise Http404()
+
+
+
+def new_article(request):
+    if request.user.is_author:
+        if request.method == 'POST':
+            article = Article()
+            article.authorID = request.user.id
+            article.author_name = request.user.username
+            article.title  =  request.POST['title']
+            article.category  =   request.POST['category']
+            article.thumbnail  =  request.POST['thumbnail']
+            article.content =  request.POST['content']
+            article.save()
+            return HttpResponse('done')
+        else:
+            form = ArticleForm()
+            return render(request,'New_article.html',{'form':form})
+    else:
+        raise Http404()
+
 
 
 
