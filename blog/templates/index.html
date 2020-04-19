@@ -30,7 +30,7 @@
       <a class="nav-link" href="#">Contact</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">All Blog</a>
+      <a class="nav-link" href="all_blog">All Blog</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">New Blog</a>
@@ -114,22 +114,73 @@
     <hr>
 
     <div class="user-cmts">
+       
 
-      <div class="user-cmt-box">
+
+
+
+
+      {% for cmt in cmts %}
+      <div class="user-cmt-box" style="margin-top: 20px;">
+
+        
+
         <div class="user-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
         <div class="user-msg">
-        <h2>Sachin Kumarr</h2>
-        <h6 style="font-style: italic;">2Aug2020</h6>
-        <div style="margin-right: 20px;">this is a nice blog this is a nice blogthis is a nice blogthis is a nice blogthis is a nice blog</div>
+        <h2>{{cmt.u_name}}</h2>
+        <h6 style="font-style: italic;">{{cmt.cmt_date}}</h6>
+        <div style="margin-right: 20px; margin-top: -20px;">{{cmt.u_msg}}</div>
+        <a style="margin-left: 20px;" href="like">Like</a>23 
+        <form action="reply/{{cmt.id}}/{{new_blog.id}}" method="POST">
+          {% csrf_token%}
+        <input type="text" name="r-msg">
+        <button type="submit">ADD</button>
+        
+      </form>
       </div>
+
+      {% for reply in replys %}
+
+      {% if reply.main_cmt_id == cmt.id%}
+
+      <div class="sub-cmt">
+        <div class="sub-user-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
+        <div class="user-msg">
+        <h2>{{reply.u_name}}</h2>
+        <h6 style="font-style: italic;">{{reply.cmt_date}}</h6>
+        <div style="margin-right: 20px; margin-top: -20px;">{{reply.r_msg}}</div>
+        </div>
       </div>
+      {%endif%}
+      {%endfor%}
+
+     
       </div>
+      {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <div class="cmt-form">
         <h1>Add Comments</h1>
+      
           
-        <form action="user_cmt" method="POST">
-         <textarea name="cmt-mag" cols="30" rows="5"></textarea><br>
+        <form action="add_cmt/{{new_blog.id}}" method="POST">
+          {% csrf_token%}
+        <input type="text" name="cmt-msg">
         <button type="submit">ADD</button>
         
       </form>

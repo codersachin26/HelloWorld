@@ -112,7 +112,7 @@ h4{
 
 .user-cmts{
     width: 75%;
-    height: 300px;
+    height: auto;
     background: rgb(75, 66, 66);
 }
 .user-img img{
@@ -121,9 +121,18 @@ h4{
     border-radius: 100%;
 }
 
+.sub-user-img img{
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    margin-left: 20px;
+    
+
+}
+
 .user-cmt-box{
     width: 80%;
-    height: 200px;
+    height: auto;
     background: rgb(180, 176, 176);
 }
 .user-msg{
@@ -136,13 +145,21 @@ h4{
 
 .cmt-form{
     width: 80%;
-    height: 400px;
+    height: auto;
     background: rgb(206, 203, 203);
-    position: relative;
+    /* position: relative; */
    
 }
 input{
     padding: 10px;
     margin-left: 10px;
     margin-bottom: 20px;
+}
+
+.sub-cmt{
+    margin-left: 100px;
+    width: 80%;
+    height: 100px;
+    margin-top: 20px;
+    
 }

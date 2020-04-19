@@ -15,7 +15,17 @@ from django.contrib.auth import authenticate,login,logout
 def index(request):
     new_blog = Article.objects.first()
     user = request.user
-    return render(request,'index.html',{'user':user,'new_blog':new_blog})
+    cmts = UserComments.objects.filter(article_id=new_blog.id)
+    replys = ReplyComments.objects.filter(article_id=new_blog.id)
+    return render(request,'index.html',{'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys})
+
+def all_blog(request):
+    all_blog = Article.objects.all()
+    user = request.user
+    return render(request,'all_blog.html',{'user':user,'all_blog':all_blog})
+
+
+
 
 def author_dashboard(request):
     if request.user.is_author:
@@ -86,14 +96,27 @@ def author_register(request):
 
         
 
-def add_cmt(request,id):
+def add_cmt(request,article_id):
     if request.user.is_authenticated:
         u_cmt = UserComments()
-        u_cmt.article = id
+        u_cmt.article_id = article_id
         u_cmt.u_msg = request.POST['cmt-msg']
-        u_cmt.u_Email = request.user.email
-        u_cmt.u_name = request.uset.username
+        u_cmt.u_name = request.user.username
         u_cmt.save()
+        return redirect('/')
+
+    else:
+        raise Http404()
+
+def cmt_reply(request,cmt_id,article_id):
+    if request.user.is_authenticated:
+        r_cmt = ReplyComments()
+        r_cmt.article_id = article_id
+        r_cmt.main_cmt_id = cmt_id
+        r_cmt.r_msg = request.POST['r-msg']
+        r_cmt.u_name = request.user.username
+        r_cmt.save()
+        return redirect('/')
 
     else:
         raise Http404()

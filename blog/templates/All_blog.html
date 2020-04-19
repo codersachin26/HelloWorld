@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block body %}
+ {% for blog in all_blog%}
+
+<div style="width: 80%; height: 100px; background: rgb(189, 186, 186);">
+    <div style="width: 150px; height: 150px; float: left;"> <img src="{% static 'blog.thumbnail'%}" alt="article-img"></div>
+     <div>{{blog.title}}</div>
+</div>
+{%endfor%}
+{% endblock %}
