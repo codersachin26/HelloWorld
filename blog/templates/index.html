@@ -82,7 +82,7 @@
   </div>
     <div class="article">
 
-      <div class="article-img"> <img src="{% static 'Django.jpg'%}" alt="img"></div>
+      <div class="article-img"> <img src="/media/{{new_blog.thumbnail}}" alt="img"></div>
 
       <p> {{new_blog.content}}</p>
 
@@ -94,11 +94,11 @@
   </div>
   <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
   <div class="right-container">
-    <div class="author-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
+    <div class="author-img"> <img src="{{author.profile_pic}}" alt=""></div>
     <div class="author-info">
-      <h2>{{user.username}}</h2>
-     <h4>Sachin is Django Web Developer in big MNCs</h4>
-       <h4>INDIA</h4>
+      <h2>{{author.username}}</h2>
+     <h4>{{author.occupation}}</h4>
+       <h4>{{author.country}}</h4>
        <span class="social-link">Instagram</span>
        <span class="social-link">Github</span>
        <span class="social-link">Linkedin</span>

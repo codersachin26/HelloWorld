@@ -13,11 +13,13 @@ from django.contrib.auth import authenticate,login,logout
 # Create your views here.
 
 def index(request):
-    new_blog = Article.objects.first()
+    new_blog = Article.objects.last()
+    author = MyUser.objects.get(id=new_blog.authorID,is_author=True)
     user = request.user
     cmts = UserComments.objects.filter(article_id=new_blog.id)
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
-    return render(request,'index.html',{'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys})
+    context = {'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author}
+    return render(request,'index.html',context)
 
 def all_blog(request):
     all_blog = Article.objects.all()
@@ -54,7 +56,7 @@ def user_logout(request):
 
 def user_register(request):
     if request.method == 'POST':
-        form = MyUserForm(request.POST)
+        form = MyUserForm(request.POST,request.FILES)
         password = request.POST['password']
         if form.is_valid():
             user=form.save(commit=False)
@@ -73,22 +75,17 @@ def user_register(request):
 
 def author_register(request):
     if request.method == 'POST':
-        new_user = MyUser()
-        password = request.POST['password']
-        new_user.set_password(password)
-        new_user.username = request.POST['username']
-        new_user.email = request.POST['email']
-        new_user.profile_pic = request.POST['profile_pic']
-        new_user.f_name = request.POST['f_name']
-        new_user.s_name = request.POST['s_name']
-        new_user.occupation = request.POST['occupation']
-        new_user.country = request.POST['country']
-        new_user.github_address = request.POST['github_address']
-        new_user.linkedin_address = request.POST['linkedin_address'] 
-        new_user.is_author = True
-        new_user.save()
-        login(request,new_user)
-        return redirect('/')
+        new_user = MyAuthorForm(request.POST,request.FILES)
+        if new_user.is_valid():
+            user=new_user.save(commit=False)
+            password = request.POST['password']
+            user.set_password(password)
+            user.is_author = True
+            user.save()
+            login(request,user)
+            return redirect('/')
+        else:
+            raise Http404()
         
     else:
         form = MyAuthorForm()
@@ -126,15 +123,14 @@ def cmt_reply(request,cmt_id,article_id):
 def new_article(request):
     if request.user.is_author:
         if request.method == 'POST':
-            article = Article()
-            article.authorID = request.user.id
-            article.author_name = request.user.username
-            article.title  =  request.POST['title']
-            article.category  =   request.POST['category']
-            article.thumbnail  =  request.POST['thumbnail']
-            article.content =  request.POST['content']
-            article.save()
-            return HttpResponse('done')
+            article  = ArticleForm(request.POST,request.FILES)
+            if article.is_valid():
+                article.authorID = request.user.id
+                article.author_name = request.user.username
+                article.save()
+                return redirect('/author_dashboard')
+            else:
+                raise Http404()
         else:
             form = ArticleForm()
             return render(request,'New_article.html',{'form':form})
