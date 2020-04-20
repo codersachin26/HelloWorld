@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate,login,logout
 
 def index(request):
     new_blog = Article.objects.last()
-    author = MyUser.objects.get(id=new_blog.authorID,is_author=True)
+    author = MyUser.objects.get(id=new_blog.author_id,is_author=True)
     user = request.user
     cmts = UserComments.objects.filter(article_id=new_blog.id)
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
@@ -96,6 +96,7 @@ def author_register(request):
 def add_cmt(request,article_id):
     if request.user.is_authenticated:
         u_cmt = UserComments()
+        u_cmt.user_id = request.user.id
         u_cmt.article_id = article_id
         u_cmt.u_msg = request.POST['cmt-msg']
         u_cmt.u_name = request.user.username
@@ -123,9 +124,10 @@ def cmt_reply(request,cmt_id,article_id):
 def new_article(request):
     if request.user.is_author:
         if request.method == 'POST':
-            article  = ArticleForm(request.POST,request.FILES)
-            if article.is_valid():
-                article.authorID = request.user.id
+            articleform  = ArticleForm(request.POST,request.FILES)
+            if articleform.is_valid():
+                article = articleform.save(commit=False)
+                article.authorI_id = request.user.id
                 article.author_name = request.user.username
                 article.save()
                 return redirect('/author_dashboard')

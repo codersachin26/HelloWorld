@@ -94,7 +94,7 @@
   </div>
   <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
   <div class="right-container">
-    <div class="author-img"> <img src="{{author.profile_pic}}" alt=""></div>
+    <div class="author-img"> <img src="/media/{{author.profile_pic}}" alt=""></div>
     <div class="author-info">
       <h2>{{author.username}}</h2>
      <h4>{{author.occupation}}</h4>
@@ -125,7 +125,7 @@
 
         
 
-        <div class="user-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
+        <div class="user-img"> <img src="/media/{{cmt.user.profile_pic}}" alt=""></div>
         <div class="user-msg">
         <h2>{{cmt.u_name}}</h2>
         <h6 style="font-style: italic;">{{cmt.cmt_date}}</h6>

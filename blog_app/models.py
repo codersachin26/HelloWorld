@@ -48,7 +48,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
 
 
 class Article(models.Model):
-    authorID = models.IntegerField(blank=True)
+    author = models.ForeignKey('MyUser',blank=True,null=True,on_delete=models.CASCADE)
     author_name = models.CharField(blank=True,max_length=25)
     title = models.CharField(max_length=50)
     thumbnail = models.ImageField(upload_to='thumbnail_img/')
@@ -63,13 +63,14 @@ class Article(models.Model):
 
 
 class UserComments(models.Model):
+    user = models.ForeignKey('MyUser',blank=True,null=True,on_delete=models.CASCADE)
     article = models.ForeignKey('Article',on_delete=models.CASCADE)
     u_msg = models.CharField(max_length=200)
     u_name = models.CharField(max_length=25)
     cmt_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.U_name
+        return self.u_name
 
 
 class ReplyComments(models.Model):
