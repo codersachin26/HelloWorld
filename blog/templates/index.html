@@ -89,9 +89,9 @@
 
     </div>
 
-
-
   </div>
+
+
   <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
   <div class="right-container">
     <div class="author-img"> <img src="/media/{{author.profile_pic}}" alt=""></div>
@@ -144,7 +144,7 @@
       {% if reply.main_cmt_id == cmt.id%}
 
       <div class="sub-cmt">
-        <div class="sub-user-img"> <img src="{% static 'mr-robot.jpg'%}" alt=""></div>
+        <div class="sub-user-img"> <img src="/media/{{reply.main_cmt.user.profile_pic}}" alt=""></div>
         <div class="user-msg">
         <h2>{{reply.u_name}}</h2>
         <h6 style="font-style: italic;">{{reply.cmt_date}}</h6>
@@ -196,7 +196,7 @@
 
 
   
-
+</div>
 
 
 </body>

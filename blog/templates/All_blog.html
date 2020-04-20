@@ -4,9 +4,21 @@
 {% block body %}
  {% for blog in all_blog%}
 
-<div style="width: 80%; height: 100px; background: rgb(189, 186, 186);">
-    <div style="width: 150px; height: 150px; float: left;"> <img src="{% static 'blog.thumbnail'%}" alt="article-img"></div>
-     <div>{{blog.title}}</div>
-</div>
+ <div style="width: 80%; height: auto; background: rgb(168, 161, 161); margin-top: 20px;">
+    <div class="title">
+    <h2>{{blog.title}}</h2>
+    <h4>{{blog.upload_date}}</h4>
+  </div>
+    <div class="article" style="position: relative;">
+
+      <div class="article-img"> <img src="/media/{{blog.thumbnail}}" alt="img"></div>
+
+      <p> {{blog.content}}</p>
+
+
+    </div>
+
+  </div>
 {%endfor%}
+
 {% endblock %}
