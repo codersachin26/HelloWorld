@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse,Http404
+from django.http import HttpResponse,Http404,JsonResponse
 from .forms import MyUserForm,LoginForm,ArticleForm,MyAuthorForm
 from .models import *
 from django.contrib.auth import authenticate,login,logout
+import json
 
 
 
@@ -18,7 +19,13 @@ def index(request):
     user = request.user
     cmts = UserComments.objects.filter(article_id=new_blog.id)
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
-    context = {'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author}
+    likes = ArticleLikes.objects.filter(article_id=new_blog.id).count()
+    userlike = ArticleLikes.objects.filter(article_id=new_blog.id,user_id=request.user.id).exists()
+    if userlike:
+        active='blue'
+    else:
+        active ='black'
+    context = {'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':cmts.count()}
     return render(request,'index.html',context)
 
 def all_blog(request):
@@ -139,6 +146,24 @@ def new_article(request):
     else:
         raise Http404()
 
+
+
+def like_article(request,article_id):
+    if request.user.is_authenticated:
+        if not ArticleLikes.objects.filter(article_id=article_id,user_id=request.user.id).exists():
+            like = ArticleLikes()
+            like.article_id = article_id
+            like.user_id = request.user.id
+            like.save()
+            dict = {'name':"name"}
+            return HttpResponse(json.dumps(dict), content_type='application/json')
+        else:
+            like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
+            like.delete()
+            return JsonResponse({'ok':'ok'})
+            
+    else:
+        return redirect('/user_register')
 
 
 

@@ -71,6 +71,8 @@
 </nav>
 </header>
 
+<!-- blog -->
+
 <div class="container">
 
   {% block body%}
@@ -89,8 +91,40 @@
 
     </div>
 
+    <div class="cmt-like" style="width: 200px; height: 100px; background: rgb(182, 182, 182);">
+      Comments{{total_cmt}} <br>
+      <button id="like"><div id="active" style="color:{{active}};"> Like</div>{{likes}}</button>
+    </div>
+
   </div>
 
+<script>
+
+        document.getElementById('like').addEventListener('click',addlike)
+        function addlike(){
+          var xhr = new XMLHttpRequest()
+          xhr.open("GET","{% url 'like' new_blog.id %}",true)
+          xhr.send()
+
+          xhr.onreadystatechange = function(){
+            if(this.readyState==4 && this.status==200){
+              if(document.getElementById('active').style.color=="blue"){
+                document.getElementById('active').style.color="black"
+              }
+              else
+              document.getElementById('active').style.color="blue"
+            }
+
+          } 
+        } 
+
+</script>
+
+
+
+
+
+  <!-- author info -->
 
   <h1 style="float: right; margin-right: 270px; border-bottom: 5px solid black;">Author</h1>
   <div class="right-container">
@@ -108,6 +142,9 @@
 
   </div>
 
+
+  <!-- comments section -->
+
   <div class="cmt-box">
 
     <h1>COMMENTS</h1>
@@ -115,10 +152,6 @@
 
     <div class="user-cmts">
        
-
-
-
-
 
       {% for cmt in cmts %}
       <div class="user-cmt-box" style="margin-top: 20px;">

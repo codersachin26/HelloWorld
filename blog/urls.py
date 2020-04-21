@@ -31,6 +31,7 @@ urlpatterns = [
     path('author_register',views.author_register),
     path('reply/<int:cmt_id>/<int:article_id>',views.cmt_reply),
     path('all_blog',views.all_blog),
+    path('like_article/<int:article_id>',views.like_article,name="like"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
