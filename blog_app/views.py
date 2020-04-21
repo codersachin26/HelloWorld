@@ -155,16 +155,21 @@ def like_article(request,article_id):
             like.article_id = article_id
             like.user_id = request.user.id
             like.save()
-            dict = {'name':"name"}
+            dict = {'ok':1}
             return HttpResponse(json.dumps(dict), content_type='application/json')
         else:
             like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
             like.delete()
-            return JsonResponse({'ok':'ok'})
+            dict = {'ok':1}
+            return HttpResponse(json.dumps(dict), content_type='application/json')
             
     else:
-        return redirect('/user_register')
+        return JsonResponse({'ok':0,'url':'http://127.0.0.1:8000/user_register'})
+        
 
+
+
+    
 
 
 

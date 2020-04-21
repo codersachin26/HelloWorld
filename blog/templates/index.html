@@ -108,11 +108,19 @@
 
           xhr.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
+              data = JSON.parse(this.responseText)
+              console.log(data.ok)
+              if(data.ok){
+
+              
               if(document.getElementById('active').style.color=="blue"){
                 document.getElementById('active').style.color="black"
               }
               else
               document.getElementById('active').style.color="blue"
+              }
+              else
+              window.location = data.url
             }
 
           } 
