@@ -38,7 +38,12 @@ def all_blog(request):
 
 def author_dashboard(request):
     if request.user.is_author:
-        return render(request,'Author_dashboard.html')
+        articles = Article.objects.filter(author_id=request.user.id,accessible=True)
+        panding_article = Article.objects.filter(author_id=request.user.id,accessible=False).count()
+        accesible_article = articles.count()
+        author = request.user
+        context ={'author':author,'articles':articles,'panding_article':panding_article,'accesible_article':accesible_article}
+        return render(request,'Author_dashboard.html',context)
     else:
         raise Http404()
 
@@ -111,7 +116,7 @@ def add_cmt(request,article_id):
         return redirect('/')
 
     else:
-        raise Http404()
+        return redirect('/login')
 
 def cmt_reply(request,cmt_id,article_id):
     if request.user.is_authenticated:
@@ -124,7 +129,7 @@ def cmt_reply(request,cmt_id,article_id):
         return redirect('/')
 
     else:
-        raise Http404()
+        return redirect('/login')
 
 
 
@@ -134,7 +139,7 @@ def new_article(request):
             articleform  = ArticleForm(request.POST,request.FILES)
             if articleform.is_valid():
                 article = articleform.save(commit=False)
-                article.authorI_id = request.user.id
+                article.author_id = request.user.id
                 article.author_name = request.user.username
                 article.save()
                 return redirect('/author_dashboard')

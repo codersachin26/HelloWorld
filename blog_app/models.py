@@ -38,7 +38,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
         elif self.is_user:
             return 'User '+self.username
         else:
-            return self.username
+            return 'admin '+self.email
 
 
 
