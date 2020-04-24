@@ -100,35 +100,6 @@
     <button id="like"><div id="active" style="color:{{active}};"> Like</div>{{likes}}</button>
   </div>
 
-<script>
-
-        document.getElementById('like').addEventListener('click',addlike)
-        function addlike(){
-          var xhr = new XMLHttpRequest()
-          xhr.open("GET","{% url 'like' new_blog.id %}",true)
-          xhr.send()
-
-          xhr.onreadystatechange = function(){
-            if(this.readyState==4 && this.status==200){
-              data = JSON.parse(this.responseText)
-              console.log(data.ok)
-              if(data.ok){
-
-              
-              if(document.getElementById('active').style.color=="blue"){
-                document.getElementById('active').style.color="black"
-              }
-              else
-              document.getElementById('active').style.color="blue"
-              }
-              else
-              window.location = data.url
-            }
-
-          } 
-        } 
-
-</script>
 
 
 
@@ -221,15 +192,15 @@
         <h1>Add Comments</h1>
       
           
-        <form action="add_cmt/{{new_blog.id}}" method="POST">
+        <form method="POST" id="cmtform" >
           {% csrf_token%}
-        <input type="text" name="cmt-msg">
-        <button type="submit">ADD</button>
+        <input type="text" name="cmt-msg" id="cmtmsg">
+        <button id="addcmt">ADD</button>
         
       </form>
-    
-
       </div>
+
+
 
     </div>
     {%endblock%}
@@ -240,6 +211,93 @@
 
   
 </div>
+
+
+<script>
+
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+
+
+  document.getElementById('cmtform').addEventListener('submit',
+  function(e){
+    e.preventDefault();
+    var xhrr = new XMLHttpRequest()
+    let cmtmsg = document.getElementById('cmtmsg').value
+    xhrr.open("POST","add_cmt1/{{new_blog.id}}",true)
+    xhrr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhrr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhrr.send(`cmt-msg=${cmtmsg}`)
+
+    xhrr.onreadystatechange = function(){
+      if(this.readyState==4 && this.status==200){
+        data = JSON.parse(this.responseText)
+        console.log(data.ok)
+        document.getElementById('cmtform').reset()
+        // if(data.ok){
+
+        
+        // if(document.getElementById('active').style.color=="blue"){
+        //   document.getElementById('active').style.color="black"
+        // }
+        // else
+        // document.getElementById('active').style.color="blue"
+        // }
+        // else
+        // window.location = data.url
+
+        
+        
+      }
+
+    } 
+  } 
+  )
+
+
+  document.getElementById('like').addEventListener('click',addlike)
+  function addlike(){
+    var xhr = new XMLHttpRequest()
+    xhr.open("GET","{% url 'like' new_blog.id %}",true)
+    xhr.send()
+
+    xhr.onreadystatechange = function(){
+      if(this.readyState==4 && this.status==200){
+        data = JSON.parse(this.responseText)
+        console.log(data.ok)
+        if(data.ok){
+
+        
+        if(document.getElementById('active').style.color=="blue"){
+          document.getElementById('active').style.color="black"
+        }
+        else
+        document.getElementById('active').style.color="blue"
+        }
+        else
+        window.location = data.url
+      }
+
+    } 
+  } 
+
+</script>
 
 
 </body>

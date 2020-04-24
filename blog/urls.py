@@ -26,7 +26,7 @@ urlpatterns = [
     path('login',views.user_login),
     path('logout',views.user_logout),
     path('author_dashboard',views.author_dashboard),
-    path('add_cmt/<int:article_id>',views.add_cmt),
+    path('add_cmt1/<int:article_id>',views.add_cmt,name="addcmt1"),
     path('new_article',views.new_article),
     path('author_register',views.author_register),
     path('reply/<int:cmt_id>/<int:article_id>',views.cmt_reply),

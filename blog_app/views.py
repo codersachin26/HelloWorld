@@ -111,9 +111,10 @@ def add_cmt(request,article_id):
         u_cmt.user_id = request.user.id
         u_cmt.article_id = article_id
         u_cmt.u_msg = request.POST['cmt-msg']
+        print(request.POST['cmt-msg'])
         u_cmt.u_name = request.user.username
         u_cmt.save()
-        return redirect('/')
+        return JsonResponse({'ok':1})
 
     else:
         return redirect('/login')
