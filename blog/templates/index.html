@@ -95,10 +95,7 @@
 
   </div>
 
-  <div class="cmt-like" style="width: 200px; height: 100px; background: rgb(182, 182, 182);">
-    Comments{{total_cmt}} <br>
-    <button id="like"><div id="active" style="color:{{active}};"> Like</div>{{likes}}</button>
-  </div>
+ 
 
 
 
@@ -124,16 +121,26 @@
   </div>
 
 
+ 
+
+
   <!-- comments section -->
 
   <div class="cmt-box">
 
+    <div class="cmt-like" style="position: relative; width: 200px; height: 100px; background: rgb(235, 231, 231);">
+      
+      Comments{{total_cmt}} <br>
+      <button id="like"><div id="active" style="color:{{active}};"> Like</div>{{likes}}</button>
+    </div>
+
     <h1>COMMENTS</h1>
     <hr>
-
+      
     <div class="user-cmts">
-       
 
+     
+      <div id="cmtdiv">
       {% for cmt in cmts %}
       <div class="user-cmt-box" style="margin-top: 20px;">
 
@@ -153,6 +160,8 @@
       </form>
       </div>
 
+      
+
       {% for reply in replys %}
 
       {% if reply.main_cmt_id == cmt.id%}
@@ -168,9 +177,10 @@
       {%endif%}
       {%endfor%}
 
+    </div>
      
-      </div>
       {% endfor %}
+    </div>
 
 
 
@@ -247,20 +257,43 @@ var csrftoken = getCookie('csrftoken');
 
     xhrr.onreadystatechange = function(){
       if(this.readyState==4 && this.status==200){
-        data = JSON.parse(this.responseText)
-        console.log(data.ok)
-        document.getElementById('cmtform').reset()
-        // if(data.ok){
-
+        var data1 = this.responseText
+        console.log(data1);
+        var data2 = JSON.parse(data1)
+        console.log(data);
         
-        // if(document.getElementById('active').style.color=="blue"){
-        //   document.getElementById('active').style.color="black"
-        // }
-        // else
-        // document.getElementById('active').style.color="blue"
-        // }
-        // else
-        // window.location = data.url
+
+        if(data2.ok){
+          console.log("data");
+            window.location = data2.url
+        }
+        else{
+          var data = JSON.parse(data2)
+        console.log(data);
+        document.getElementById('cmtform').reset()
+
+var tNew = document.createElement('div');
+ tNew.innerHTML = `<div class="user-cmt-box" style="margin-top: 20px;"> <div class="user-img"> <img src="/media/{{request.user.profile_pic}}" alt=""></div>
+<div class="user-msg">
+<h2>${data.fields.u_name}</h2>
+<h6 style="font-style: italic;">${data.fields.cmt_date}</h6>
+<div style="margin-right: 20px; margin-top: -20px;">${data.fields.u_msg}</div>
+<a style="margin-left: 20px;" href="like">Like</a>23 
+<form action="reply/${data.fields.id}/{{new_blog.id}}" method="POST">
+  {% csrf_token%}
+<input type="text" name="r-msg">
+<button type="submit">ADD</button>
+
+</form>
+</div></div>`
+var cmtdiv = document.getElementById('cmtdiv');
+cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
+        }
+        
+            
+
+            
+  
 
         
         
@@ -274,7 +307,7 @@ var csrftoken = getCookie('csrftoken');
   document.getElementById('like').addEventListener('click',addlike)
   function addlike(){
     var xhr = new XMLHttpRequest()
-    xhr.open("GET","{% url 'like' new_blog.id %}",true)
+    xhr.open("GET","like_article/{{new_blog.id}}",true)
     xhr.send()
 
     xhr.onreadystatechange = function(){

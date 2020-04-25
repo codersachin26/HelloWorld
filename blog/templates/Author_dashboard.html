@@ -56,17 +56,18 @@
 
 
 </ul>
-<div style="width: 60%; height: 550px; background: rgb(189, 185, 185); float: left; margin: 20px;">
+<div style=" width: 60%; height: auto; background: rgb(189, 185, 185); float: left; margin: 20px;">
   <h1>Your Articles</h1>
 
   {% for article in articles%}
 
-  <div style="width: 90%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
-    <img src="/media/{{article.thumbnail}}" alt="">
+  <div style="float: left; width: 80%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
+    <img src="/media/{{article.thumbnail}}" style="width: 250px; height: 200px;" alt="">
     <h1>{{article.title}}</h1>
   </div>
+  {% endfor %}
 </div>
 
-{% endfor %}
+
 
 {% endblock%}

@@ -4,7 +4,7 @@ from .forms import MyUserForm,LoginForm,ArticleForm,MyAuthorForm
 from .models import *
 from django.contrib.auth import authenticate,login,logout
 import json
-
+from django.core import serializers
 
 
 
@@ -17,7 +17,7 @@ def index(request):
     new_blog = Article.objects.last()
     author = MyUser.objects.get(id=new_blog.author_id,is_author=True)
     user = request.user
-    cmts = UserComments.objects.filter(article_id=new_blog.id)
+    cmts = UserComments.objects.filter(article_id=new_blog.id).order_by('-id')[:4]
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
     likes = ArticleLikes.objects.filter(article_id=new_blog.id).count()
     userlike = ArticleLikes.objects.filter(article_id=new_blog.id,user_id=request.user.id).exists()
@@ -111,13 +111,19 @@ def add_cmt(request,article_id):
         u_cmt.user_id = request.user.id
         u_cmt.article_id = article_id
         u_cmt.u_msg = request.POST['cmt-msg']
-        print(request.POST['cmt-msg'])
         u_cmt.u_name = request.user.username
         u_cmt.save()
-        return JsonResponse({'ok':1})
+        usercmt = UserComments.objects.last()
+        serialized_obj = serializers.serialize('json', [usercmt])
+        print(serialized_obj)
+        data=serialized_obj.strip("[]")
+        print(data)
+   
+        return JsonResponse(data,safe=False)
 
     else:
-        return redirect('/login')
+        return  JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
+
 
 def cmt_reply(request,cmt_id,article_id):
     if request.user.is_authenticated:
@@ -171,6 +177,11 @@ def like_article(request,article_id):
             
     else:
         return JsonResponse({'ok':0,'url':'http://127.0.0.1:8000/user_register'})
+
+
+
+
+
         
 
 
