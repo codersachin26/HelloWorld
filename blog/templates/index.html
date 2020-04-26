@@ -263,7 +263,7 @@ var csrftoken = getCookie('csrftoken');
     e.preventDefault();
     var xhrr = new XMLHttpRequest()
     let cmtmsg = document.getElementById('cmtmsg').value
-    xhrr.open("POST","add_cmt1/{{new_blog.id}}",true)
+    xhrr.open("POST","{% url 'addcmt1' new_blog.id %}",true)
     xhrr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhrr.setRequestHeader("X-CSRFToken", csrftoken);
     xhrr.send(`cmt-msg=${cmtmsg}`)
@@ -320,7 +320,7 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
   document.getElementById('like').addEventListener('click',addlike)
   function addlike(){
     var xhr = new XMLHttpRequest()
-    xhr.open("GET","like_article/{{new_blog.id}}",true)
+    xhr.open("GET","{% url 'like' new_blog.id %}",true)
     xhr.send()
 
     xhr.onreadystatechange = function(){
