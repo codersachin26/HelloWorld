@@ -24,14 +24,16 @@ urlpatterns = [
     path('', views.index),
     path('user_register',views.user_register),
     path('login',views.user_login),
+    path('about',views.about,name="about"),
     path('logout',views.user_logout),
     path('author_dashboard',views.author_dashboard),
     path('add_cmt1/<int:article_id>',views.add_cmt,name="addcmt1"),
     path('new_article',views.new_article),
     path('author_register',views.author_register),
     path('reply/<int:cmt_id>/<int:article_id>',views.cmt_reply),
-    path('all_blog',views.all_blog),
+    path('all_blog',views.all_blog,name="all_blogs"),
     path('like_article/<int:article_id>',views.like_article,name="like"),
+    path('view_article/<int:article_id>',views.view_article,name="view_article"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,6 +9,7 @@
     <title>Home</title>
 </head>
 <body>
+  
 
 <!-- A grey horizontal navbar that becomes vertical on small screens -->
 <header>
@@ -24,13 +25,13 @@
       <a class="nav-link" href="\">Home</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">About</a>
+      <a class="nav-link" href="{% url 'about' %}">About</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">Contact</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="all_blog">All Blog</a>
+      <a class="nav-link" href="{% url 'all_blogs' %}">All Blog</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">New Blog</a>
@@ -130,8 +131,8 @@
 
     <div class="cmt-like" style="position: relative; width: 200px; height: 100px; background: rgb(235, 231, 231);">
       
-      Comments{{total_cmt}} <br>
-      <button id="like"><div id="active" style="color:{{active}};"> Like</div>{{likes}}</button>
+      Comments {{total_cmt}} <br><br>
+      <button id="like" style="padding: 10px;" ><div id="active" style="color:{{active}};"> Like </div>{{likes}}</button>
     </div>
 
     <h1>COMMENTS</h1>
@@ -185,17 +186,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+<!-- Comments-Form -->
 
 
       <div class="cmt-form">
@@ -210,18 +201,40 @@
       </form>
       </div>
 
-
-
     </div>
-    {%endblock%}
+   
     
   </div>
 
+  
+      <!-- Related_articles -->
 
+  <div style="width: 95%; height: auto; background: rgb(223, 219, 219); display: grid;">
+  
+  <h1>Related Articles</h1>
+  {% for article in related_articles%}
+  {% ifequal article.id new_blog.id%}
 
+  {%else%}
+  <a href="{% url 'view_article' article.id %}">
+  <div style="float: left; width: 80%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
+    <img src="/media/{{article.thumbnail}}" style="width: 250px; height: 200px; float: left;" alt="">
+    <div><h1>{{article.title}}</h1></div>
+    <label for="">Author </label><span style="color: black;">{{article.author_name}}</span>
+  </div>
+</a>
+{%endifequal%}
+  {% endfor %}
+  
+  </div>
+
+  {%endblock%}
   
 </div>
 
+
+
+      <!-- javaScripts -->
 
 <script>
 
@@ -331,6 +344,8 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
   } 
 
 </script>
+
+
 
 
 </body>

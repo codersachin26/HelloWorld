@@ -40,9 +40,9 @@
             
            <h4>{{author.occupation}}</h4>
              <h4>{{author.country}}</h4>
-             <span class="social-link">Instagram</span>
-             <span class="social-link">Github</span>
-             <span class="social-link">Linkedin</span>
+            <a href="#"> <span class="social-link">Instagram</span></a>
+            <a href="{{author.github_address}}"><span class="social-link">Github</span></a> 
+            <a href="{{author.linkedin_address}}"> <span class="social-link">Linkedin</span> </a>
             </div>
         
     </div>
@@ -59,12 +59,17 @@
 <div style=" width: 60%; height: auto; background: rgb(189, 185, 185); float: left; margin: 20px;">
   <h1>Your Articles</h1>
 
-  {% for article in articles%}
-
+  {% for article in data%}
+    <a href="{% url 'view_article' article.id %}">
   <div style="float: left; width: 80%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
     <img src="/media/{{article.thumbnail}}" style="width: 250px; height: 200px;" alt="">
     <h1>{{article.title}}</h1>
+    <div style="float: right; margin-top: -200px; margin-right: 100px;">
+        <label for="">Comments </label><em>{{article.cmt}}</em><br><br>
+        <label for="">Like </label><em>{{article.like}}</em>
+    </div>
   </div>
+</a>
   {% endfor %}
 </div>
 

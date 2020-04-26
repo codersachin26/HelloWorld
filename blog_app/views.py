@@ -16,6 +16,7 @@ from django.core import serializers
 def index(request):
     new_blog = Article.objects.last()
     author = MyUser.objects.get(id=new_blog.author_id,is_author=True)
+    related_articles = Article.objects.filter(category=new_blog.category,accessible=True)
     user = request.user
     cmts = UserComments.objects.filter(article_id=new_blog.id).order_by('-id')[:4]
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
@@ -25,7 +26,7 @@ def index(request):
         active='blue'
     else:
         active ='black'
-    context = {'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':cmts.count()}
+    context = {'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':cmts.count()}
     return render(request,'index.html',context)
 
 def all_blog(request):
@@ -41,8 +42,19 @@ def author_dashboard(request):
         articles = Article.objects.filter(author_id=request.user.id,accessible=True)
         panding_article = Article.objects.filter(author_id=request.user.id,accessible=False).count()
         accesible_article = articles.count()
+        data = []
+    
+        for art in articles:
+            newdata = {}
+            newdata["cmt"] = UserComments.objects.filter(article_id=art.id).count()
+            newdata["title"] = art.title
+            newdata["id"] = art.id
+            newdata["thumbnail"] = art.thumbnail
+            newdata["like"] = ArticleLikes.objects.filter(article_id=art.id).count() + ReplyComments.objects.filter(article_id=art.id).count()
+            data.append(newdata)
         author = request.user
-        context ={'author':author,'articles':articles,'panding_article':panding_article,'accesible_article':accesible_article}
+
+        context ={'data':data,'author':author,'articles':articles,'panding_article':panding_article,'accesible_article':accesible_article}
         return render(request,'Author_dashboard.html',context)
     else:
         raise Http404()
@@ -177,6 +189,32 @@ def like_article(request,article_id):
             
     else:
         return JsonResponse({'ok':0,'url':'http://127.0.0.1:8000/user_register'})
+
+    
+
+
+def view_article(request,article_id):
+    view_blog = Article.objects.get(id=article_id)
+    author = MyUser.objects.get(id=view_blog.author_id,is_author=True)
+    related_articles = Article.objects.filter(category=view_blog.category,accessible=True)
+    user = request.user
+    cmts = UserComments.objects.filter(article_id=view_blog.id).order_by('-id')[:4]
+    replys = ReplyComments.objects.filter(article_id=view_blog.id)
+    likes = ArticleLikes.objects.filter(article_id=view_blog.id).count()
+    userlike = ArticleLikes.objects.filter(article_id=view_blog.id,user_id=request.user.id).exists()
+    if userlike:
+        active='blue'
+    else:
+        active ='black'
+    context = {'related_articles':related_articles,'active':active,'user':user,'new_blog':view_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':cmts.count()}
+    return render(request,'index.html',context)
+
+
+def about(request):
+    return render(request,'about.html')
+
+
+
 
 
 

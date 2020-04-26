@@ -20,7 +20,8 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
     country = models.CharField(blank=True,max_length=15,null=True)
     authorise = models.BooleanField(default=False)
     github_address = models.CharField(blank=True,max_length=50,null=True)
-    linkedin_address = models.CharField(blank=True,max_length=30,null=True)
+    linkedin_address = models.CharField(blank=True,max_length=50,null=True)
+    instagram_address = models.CharField(blank=True,max_length=50,null=True)
     is_active = models.BooleanField(default=True)   
     is_author = models.BooleanField(default=False) 
     is_user = models.BooleanField(default=False)
@@ -48,12 +49,20 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
 
 
 class Article(models.Model):
+    type =(
+        ("Programming","Programming"),
+        ("Framework","Framework"),
+        ("Hacking","Hacking"),
+        ("Language","Language"),
+        ("Other","Other"),
+
+    )
     author = models.ForeignKey('MyUser',blank=True,null=True,on_delete=models.CASCADE)
     author_name = models.CharField(blank=True,max_length=25)
     title = models.CharField(max_length=50)
     thumbnail = models.ImageField(upload_to='thumbnail_img/')
     upload_date = models.DateTimeField(blank=True,default=timezone.now)
-    category = models.CharField(max_length=30)
+    category = models.CharField(max_length=30,default="Other",choices=type)
     content = models.CharField(max_length=5000)
     accessible = models.BooleanField(blank=True,default=False)
 
