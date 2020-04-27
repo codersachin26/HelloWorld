@@ -26,7 +26,7 @@ urlpatterns = [
     path('login',views.user_login),
     path('about',views.about,name="about"),
     path('logout',views.user_logout),
-    path('author_dashboard',views.author_dashboard),
+    path('author_dashboard',views.author_dashboard,name="author_dashboard"),
     path('add_cmt1/<int:article_id>',views.add_cmt,name="addcmt1"),
     path('new_article',views.new_article),
     path('author_register',views.author_register),

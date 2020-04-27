@@ -43,7 +43,7 @@
     </li>
     {% if user.is_author %}
     <li class="nav-item">
-      <a class="nav-link" href="author_dashboard">DashBoard</a>
+      <a class="nav-link" href="{% url 'author_dashboard' %}">DashBoard</a>
     </li>
     {% else %}
     <li class="nav-item">
@@ -179,7 +179,9 @@
     </div>
      
       {% endfor %}
-    </div>
+
+
+  </div>
 
 
 
@@ -226,13 +228,15 @@
   
   </div>
 
-  {%endblock%}
+ 
   
-</div>
+
 
 
 
       <!-- javaScripts -->
+
+      
 
 <script>
 
@@ -392,8 +396,8 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
 
 </script>
 
-
-
+{%endblock%}
+</div>
 
 </body>
 </html>
