@@ -290,14 +290,12 @@ var tNew = document.createElement('div');
 <h2>${data.fields.u_name}</h2>
 <h6 style="font-style: italic;">${data.fields.cmt_date}</h6>
 <div style="margin-right: 20px; margin-top: -20px;">${data.fields.u_msg}</div>
-<a style="margin-left: 20px;" href="like">Like</a>23 
-<form action="reply/${data.fields.id}/{{new_blog.id}}" method="POST">
-  {% csrf_token%}
-<input type="text" name="r-msg">
-<button type="submit">ADD</button>
 
-</form>
-</div></div>`
+<form id="cmt_reply" method="POST">
+          {% csrf_token%}
+        <input type="text" name="r-msg" id="msg-${data.pk}">
+        <button onclick="comment_reply(${data.pk})" type="button">ADD</button>
+</div><div id="div-${data.pk}"></div></div>`
 var cmtdiv = document.getElementById('cmtdiv');
 cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
 
