@@ -137,18 +137,23 @@ def add_cmt(request,article_id):
         return  JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
 
 
-def cmt_reply(request,cmt_id,article_id):
+def cmt_reply(request,article_id):
+    data = {}
     if request.user.is_authenticated:
+        cmt_id = request.POST['cmt-id']
+        print(cmt_id)
         r_cmt = ReplyComments()
         r_cmt.article_id = article_id
         r_cmt.main_cmt_id = cmt_id
-        r_cmt.r_msg = request.POST['r-msg']
+        r_cmt.r_msg = request.POST['cmt-msg']
         r_cmt.u_name = request.user.username
         r_cmt.save()
-        return redirect('/')
+        replytime = ReplyComments.objects.last().cmt_date
+        data["cmt_date"] = replytime
+        return JsonResponse(data,safe=False)
 
     else:
-        return redirect('/login')
+        return JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
 
 
 

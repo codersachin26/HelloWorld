@@ -30,7 +30,7 @@ urlpatterns = [
     path('add_cmt1/<int:article_id>',views.add_cmt,name="addcmt1"),
     path('new_article',views.new_article),
     path('author_register',views.author_register),
-    path('reply/<int:cmt_id>/<int:article_id>',views.cmt_reply),
+    path('reply/<int:article_id>',views.cmt_reply,name='reply'),
     path('all_blog',views.all_blog,name="all_blogs"),
     path('like_article/<int:article_id>',views.like_article,name="like"),
     path('view_article/<int:article_id>',views.view_article,name="view_article"),
