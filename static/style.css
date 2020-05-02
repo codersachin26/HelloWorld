@@ -150,6 +150,8 @@ h4{
 .cmt-form{
     width: 80%;
     height: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
     background: rgb(206, 203, 203);
     /* position: relative; */
    

@@ -54,7 +54,7 @@
 
     {%else%}
     <li class="nav-item">
-      <a class="nav-link" href="login">Login</a>
+      <a class="nav-link" href="{% url 'login' %}">Login</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="/user_register">New User?</a>
@@ -150,7 +150,7 @@
         <h6 style="font-style: italic;">{{cmt.cmt_date}}</h6>
         <div style="margin-right: 20px; margin-top: -20px;">{{cmt.u_msg}}</div>
         
-        <form id="cmt_reply" method="POST">
+        <form id="cmt_reply-{{cmt.id}}" method="POST">
           {% csrf_token%}
         <input type="text" name="r-msg" id="msg-{{cmt.id}}">
         <button onclick="comment_reply({{cmt.id}})" type="button">ADD</button>
@@ -180,7 +180,16 @@
      
       {% endfor %}
 
+  
+  </div>
 
+  <div id="more+" style="float: left;">
+    {% if more %}
+    <script>
+      document.cookie ="cmtpage=2"
+    </script>
+    <div style="margin-top: 10px; margin-left: 100px; padding: 10px; width: 60px; background: rgb(109, 105, 105);"><button onclick="more()" style="background: none;">MORE</button></div>
+    {% endif %}
   </div>
 
 
@@ -295,7 +304,7 @@ var tNew = document.createElement('div');
 <h6 style="font-style: italic;">${data.fields.cmt_date}</h6>
 <div style="margin-right: 20px; margin-top: -20px;">${data.fields.u_msg}</div>
 
-<form id="cmt_reply" method="POST">
+<form class="cmt_reply" method="POST">
           {% csrf_token%}
         <input type="text" name="r-msg" id="msg-${data.pk}">
         <button onclick="comment_reply(${data.pk})" type="button">ADD</button>
@@ -340,7 +349,7 @@ function comment_reply(cmt_id){
         }
         else{
          
-        document.getElementById('cmtform').reset()
+        document.getElementById(`cmt_reply-${cmt_id}`).reset()
 
 var tNew = document.createElement('div');
  tNew.innerHTML = `<div class="sub-cmt">
@@ -352,9 +361,9 @@ var tNew = document.createElement('div');
         </div>
       </div>`
 var cmtdiv = document.getElementById(`div-${cmt_id}`);
-cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
+cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
 
-
+ 
 
         }
         
@@ -366,7 +375,7 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
 
 
 
-
+     //  addlike
 
   document.getElementById('like').addEventListener('click',addlike)
   function addlike(){
@@ -393,6 +402,99 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
 
     } 
   } 
+
+  function more(){
+
+    var xhr = new XMLHttpRequest()
+    xhr.open("GET","{% url 'more' new_blog.id %}")
+    xhr.send()
+    xhr.onreadystatechange = function(){
+
+      if(this.readyState == 4 && this.status == 200){
+        jsondata = this.responseText
+        console.log(jsondata);
+        
+        cmts = JSON.parse(jsondata)
+        usercmts =cmts.usercmts
+        console.log(cmts);
+        
+        
+    
+      
+
+      
+
+          
+         let i=0
+         let dom = ''
+          for( i; i<4;i++)
+          {
+           dom += `<div class="user-cmt-box" style="margin-top: 20px;">
+
+        
+
+                  <div class="user-img"> <img src="/media/${usercmts[i].cmt.profile_pic}" alt=""></div>
+                  <div class="user-msg">
+                  <h2>${usercmts[i].cmt.username}</h2>
+                  <h6 style="font-style: italic;">${usercmts[i].cmt.cmt_date}</h6>
+                  <div style="margin-right: 20px; margin-top: -20px;">${usercmts[i].cmt.cmtmsg}</div>
+                  
+                  <form id="cmt_reply-${usercmts[i].cmt.id}" method="POST">
+                    {% csrf_token%}
+                  <input type="text" name="r-msg" id="msg-${usercmts[i].cmt.id}">
+                   <button onclick="comment_reply(${usercmts[i].cmt.id})" type="button">ADD</button>
+
+                 
+              
+                    </form>
+                    </div>`
+            
+          
+     
+      
+                  allreply = usercmts[i].reply
+                  allreply.forEach(reply => {
+
+                    
+                         dom +=   `<div id="div-${reply.cmt_id}">
+
+                                <div class="sub-cmt">
+                                  <div class="sub-user-img"> <img src="/media/${reply.profile_pic}" alt=""></div>
+                                  <div class="user-msg">
+                                  <h2>${reply.username}</h2>
+                                  <h6 style="font-style: italic;">${reply.cmt_date}</h6>
+                                  <div style="margin-right: 20px; margin-top: -20px;">${reply.r_msg}</div>
+                                  </div>
+                                </div>
+                               
+                              </div>
+
+                              </div>`
+                                        
+                                      });
+                              }
+                      
+                              var Newdiv = document.createElement('div');  
+                                Newdiv.innerHTML = dom
+                                var cmtdiv = document.getElementById('cmtdiv');
+                                cmtdiv.insertBefore(Newdiv, cmtdiv.lastChild);
+                                if(cmts.more) {
+                                  document.getElementById('more+').remove()
+                                }
+                         
+                               }
+                              
+                          else{
+                            console.log('error');
+                            
+                          }
+                        
+
+
+                      }
+  }
+
+
 
 </script>
 
