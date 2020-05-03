@@ -182,15 +182,18 @@
 
   
   </div>
-
-  <div id="more+" style="float: left;">
-    {% if more %}
-    <script>
-      document.cookie ="cmtpage=2"
-    </script>
-    <div style="margin-top: 10px; margin-left: 100px; padding: 10px; width: 60px; background: rgb(109, 105, 105);"><button onclick="more()" style="background: none;">MORE</button></div>
-    {% endif %}
+    
+  {% if more %}
+  <div id="morecmt" style="float: left;">
+   
+    
+    <div id="m" style="margin-top: 10px; margin-left: 100px; padding: 10px; width: 60px; background: rgb(109, 105, 105);"><button onclick="more()" style="background: none;">MORE</button></div>
+  
   </div>
+  <!-- <script>
+    document.cookie ="cmtpage=2"
+  </script> -->
+  {% endif %}
 
 
 
@@ -412,7 +415,7 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
 
       if(this.readyState == 4 && this.status == 200){
         jsondata = this.responseText
-        console.log(jsondata);
+        console.log('jsondata');
         
         cmts = JSON.parse(jsondata)
         usercmts =cmts.usercmts
@@ -427,7 +430,7 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
           
          let i=0
          let dom = ''
-          for( i; i<4;i++)
+          for( i; i<usercmts.length;i++)
           {
            dom += `<div class="user-cmt-box" style="margin-top: 20px;">
 
@@ -479,7 +482,14 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
                                 var cmtdiv = document.getElementById('cmtdiv');
                                 cmtdiv.insertBefore(Newdiv, cmtdiv.lastChild);
                                 if(cmts.more) {
-                                  document.getElementById('more+').remove()
+                                  var morebtn = document.getElementById('m')
+                          
+                                  morebtn.remove()
+
+                                }
+                                else{
+                                  console.log('not cut');
+                                  
                                 }
                          
                                }

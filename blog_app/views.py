@@ -213,10 +213,12 @@ def view_article(request,article_id):
     replys = ReplyComments.objects.filter(article_id=view_blog.id)
     likes = ArticleLikes.objects.filter(article_id=view_blog.id).count()
     userlike = ArticleLikes.objects.filter(article_id=view_blog.id,user_id=request.user.id).exists()
-    morecount = UserComments.objects.all().count()
+    morecount = UserComments.objects.filter(article_id=view_blog.id).count()
+    print(morecount)
 
     if morecount > 4:
         more = True
+        request.session['next'] = '2'
     else:
         more = False 
 
@@ -235,13 +237,15 @@ def about(request):
 
 def more(request,blog_id):
     user_cmts ={}
-    no = int(request.COOKIES['cmtpage'])
-    print(no)
-    more = False
-    cmts = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no-1)*4:no*4]
-    next = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no+1-1)*4:(no+1)*4].exists()
-  
+    
+    no = int(request.session['next']) 
 
+    more = False
+    c = UserComments.objects.filter(article_id=blog_id).order_by('-id').count()
+    cmts = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no-1)*4:no*4]
+    next = UserComments.objects.filter(article_id=blog_id).order_by('-id')[((no)*4):(no+1)*4].exists()
+  
+    print(cmts)
  
     all_cmts = []
     for cmt in cmts:
@@ -270,46 +274,19 @@ def more(request,blog_id):
             replylist.append(reply)
         user_cmts['reply'] = replylist
         all_cmts.append(user_cmts)
-      
-        # usercmt['cmts'] = serializers.serialize('json',[UserComments.objects.get(id=cmt.id)])
-        # serialized_obj = serializers.serialize('json', [cmt])
-        # main_cmt['cmt'] = cmt
-        # reply = ReplyComments.objects.filter(article_id=blog_id,main_cmt=cmt.id)
-        # print(reply)
-        # usercmt['reply'] = serializers.serialize('json',reply)
-        # user_cmts.append(usercmt)
-    # json_reply = {'reply': user_reply}
 
-    # print(user_cmts)
     nextpage = no+1 
-    if next is False:
+    if not next:
         more = True
+    else:
+        request.session['next'] = str(no+1)
 
     data = {
        'usercmts':all_cmts,
        'more':more
     }
-    res =  HttpResponse(json.dumps(data),content_type='application/json')
-
-
-   
     
-    # user_cmts['reply'] = user_reply
-    # user_cmtss = {}
-    # user_cmtss['data'] = user_cmts
-    # jsondata = json.dumps(user_cmtss)
-    # print(user_cmts)
-    # print(jsondata)
-           
-    # serialized_obj = serializers.serialize('json', [user_cmts])
-    # print(serialized_obj)
-    # data=serialized_obj.strip("[]")
-    # print(data)
-    # res = JsonResponse(data,safe=False)
-    if next:
-        res.set_cookie('cmtpage',str(nextpage))
-  
-    return res
+    return HttpResponse(json.dumps(data),content_type='application/json')
 
 
 
