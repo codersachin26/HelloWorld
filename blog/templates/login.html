@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
-</head>
-<body>
+{% extends 'index.html' %}
 
-    <form action="login" method="post">
-        {% csrf_token %}
+
+{% block body %}
+<h1 style="text-align: center;">Log in </h1><hr>
+
+<div style=" margin-top: 100px; margin-left: 300px; width: 200px; height: 300px;">
+
+  <form action="login" method="post">
+    {% csrf_token %}
     {{form.as_p}}
-    <input type="submit" value="login">
+<input type="submit" value="login">
+  
+</form>
+<a href="forgot_paasword"  style="color: aliceblue;"><strong>Forgot Paasword?</strong></a>
 
-    </form>
-    
-</body>
-</html>
+</div>
+{% endblock %}

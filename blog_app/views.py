@@ -23,6 +23,7 @@ def index(request):
     morecount = UserComments.objects.all().count()
     if morecount > 4:
         more = True
+        request.session['next'] = '2'
     else:
         more = False     
     replys = ReplyComments.objects.filter(article_id=new_blog.id)
@@ -124,42 +125,44 @@ def author_register(request):
         
 
 def add_cmt(request,article_id):
-    if request.user.is_authenticated:
-        u_cmt = UserComments()
-        u_cmt.user_id = request.user.id
-        u_cmt.article_id = article_id
-        u_cmt.u_msg = request.POST['cmt-msg']
-        u_cmt.u_name = request.user.username
-        u_cmt.save()
-        usercmt = UserComments.objects.last()
-        serialized_obj = serializers.serialize('json', [usercmt])
-        print(serialized_obj)
-        data=serialized_obj.strip("[]")
-        print(data)
-   
-        return JsonResponse(data,safe=False)
+    if request.is_ajax():
+        if request.user.is_authenticated:
+            u_cmt = UserComments()
+            u_cmt.user_id = request.user.id
+            u_cmt.article_id = article_id
+            u_cmt.u_msg = request.POST['cmt-msg']
+            u_cmt.u_name = request.user.username
+            u_cmt.save()
+            usercmt = UserComments.objects.last()
+            serialized_obj = serializers.serialize('json', [usercmt])
+            print(serialized_obj)
+            data=serialized_obj.strip("[]")
+            print(data)
+    
+            return JsonResponse(data,safe=False)
 
-    else:
-        return  JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
+        else:
+            return  JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
 
 
 def cmt_reply(request,article_id):
-    data = {}
-    if request.user.is_authenticated:
-        cmt_id = request.POST['cmt-id']
-        print(cmt_id)
-        r_cmt = ReplyComments()
-        r_cmt.article_id = article_id
-        r_cmt.main_cmt_id = cmt_id
-        r_cmt.r_msg = request.POST['cmt-msg']
-        r_cmt.u_name = request.user.username
-        r_cmt.save()
-        replytime = ReplyComments.objects.last().cmt_date
-        data["cmt_date"] = replytime
-        return JsonResponse(data,safe=False)
+    if request.is_ajax():
+        data = {}
+        if request.user.is_authenticated:
+            cmt_id = request.POST['cmt-id']
+            print(cmt_id)
+            r_cmt = ReplyComments()
+            r_cmt.article_id = article_id
+            r_cmt.main_cmt_id = cmt_id
+            r_cmt.r_msg = request.POST['cmt-msg']
+            r_cmt.u_name = request.user.username
+            r_cmt.save()
+            replytime = ReplyComments.objects.last().cmt_date
+            data["cmt_date"] = replytime
+            return JsonResponse(data,safe=False)
 
-    else:
-        return JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
+        else:
+            return JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
 
 
 
@@ -184,22 +187,23 @@ def new_article(request):
 
 
 def like_article(request,article_id):
-    if request.user.is_authenticated:
-        if not ArticleLikes.objects.filter(article_id=article_id,user_id=request.user.id).exists():
-            like = ArticleLikes()
-            like.article_id = article_id
-            like.user_id = request.user.id
-            like.save()
-            dict = {'ok':1}
-            return HttpResponse(json.dumps(dict), content_type='application/json')
+    if request.is_ajax():
+        if request.user.is_authenticated:
+            if not ArticleLikes.objects.filter(article_id=article_id,user_id=request.user.id).exists():
+                like = ArticleLikes()
+                like.article_id = article_id
+                like.user_id = request.user.id
+                like.save()
+                dict = {'ok':1}
+                return HttpResponse(json.dumps(dict), content_type='application/json')
+            else:
+                like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
+                like.delete()
+                dict = {'ok':1}
+                return HttpResponse(json.dumps(dict), content_type='application/json')
+                
         else:
-            like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
-            like.delete()
-            dict = {'ok':1}
-            return HttpResponse(json.dumps(dict), content_type='application/json')
-            
-    else:
-        return JsonResponse({'ok':0,'url':'http://127.0.0.1:8000/user_register'})
+            return JsonResponse({'ok':0,'url':'http://127.0.0.1:8000/user_register'})
 
     
 
@@ -236,57 +240,52 @@ def about(request):
 
 
 def more(request,blog_id):
-    user_cmts ={}
-    
-    no = int(request.session['next']) 
-
-    more = False
-    c = UserComments.objects.filter(article_id=blog_id).order_by('-id').count()
-    cmts = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no-1)*4:no*4]
-    next = UserComments.objects.filter(article_id=blog_id).order_by('-id')[((no)*4):(no+1)*4].exists()
-  
-    print(cmts)
- 
-    all_cmts = []
-    for cmt in cmts:
+    if request.is_ajax():
         user_cmts ={}
-
-        usercmt = {
-            'profile_pic':str(cmt.user.profile_pic),
-            'username': cmt.u_name,
-            'cmtmsg': cmt.u_msg,
-            'article_id': cmt.article.id,
-            'cmt_date' :  str(cmt.cmt_date),
-            'id' : cmt.id
-        }
-        user_cmts['cmt'] = usercmt
-        replylist = []
-        replys = ReplyComments.objects.filter(article_id=blog_id,main_cmt=cmt.id)
-        for rply in replys:
-            reply = {
-            'profile_pic': str(rply.main_cmt.user.profile_pic),
-            'username': rply.u_name,
-            'r_msg': rply.r_msg,
-            'cmt_id': cmt.id,
-            'article_id': rply.article.id,
-            'cmt_date' :  str(rply.cmt_date)
+        no = int(request.session['next']) 
+        more = False
+        c = UserComments.objects.filter(article_id=blog_id).order_by('-id').count()
+        cmts = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no-1)*4:no*4]
+        next = UserComments.objects.filter(article_id=blog_id).order_by('-id')[((no)*4):(no+1)*4].exists()
+        all_cmts = []
+        for cmt in cmts:
+            user_cmts ={}
+            usercmt = {
+                'profile_pic':str(cmt.user.profile_pic),
+                'username': cmt.u_name,
+                'cmtmsg': cmt.u_msg,
+                'article_id': cmt.article.id,
+                'cmt_date' :  str(cmt.cmt_date),
+                'id' : cmt.id
             }
-            replylist.append(reply)
-        user_cmts['reply'] = replylist
-        all_cmts.append(user_cmts)
+            user_cmts['cmt'] = usercmt
+            replylist = []
+            replys = ReplyComments.objects.filter(article_id=blog_id,main_cmt=cmt.id)
+            for rply in replys:
+                reply = {
+                'profile_pic': str(rply.main_cmt.user.profile_pic),
+                'username': rply.u_name,
+                'r_msg': rply.r_msg,
+                'cmt_id': cmt.id,
+                'article_id': rply.article.id,
+                'cmt_date' :  str(rply.cmt_date)
+                }
+                replylist.append(reply)
+            user_cmts['reply'] = replylist
+            all_cmts.append(user_cmts)
 
-    nextpage = no+1 
-    if not next:
-        more = True
-    else:
-        request.session['next'] = str(no+1)
+        nextpage = no+1 
+        if not next:
+            more = True
+        else:
+            request.session['next'] = str(no+1)
 
-    data = {
-       'usercmts':all_cmts,
-       'more':more
-    }
-    
-    return HttpResponse(json.dumps(data),content_type='application/json')
+        data = {
+        'usercmts':all_cmts,
+        'more':more
+        }
+        
+        return HttpResponse(json.dumps(data),content_type='application/json')
 
 
 

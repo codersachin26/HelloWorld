@@ -19,7 +19,7 @@
   <ul class="navbar-nav">
     
     <div class="web-title">
-    <h2>MyBlogApp</h2><br>
+    <h2 style="font-family:Lucida Console, Courier, monospace;">MyBlogApp</h2><br>
   </div>
     <li class="nav-item">
       <a class="nav-link" href="\">Home</a>
@@ -30,17 +30,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'all_blogs' %}">All Blog</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">New Blog</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link" href="#">{{user}}</a>
-    </li>
+  
     {% if user.is_authenticated %}
-    <li class="nav-item">
-      <a class="nav-link" href="logout">Logout</a>
-    </li>
+  
     {% if user.is_author %}
     <li class="nav-item">
       <a class="nav-link" href="{% url 'author_dashboard' %}">DashBoard</a>
@@ -65,7 +57,15 @@
 
     {%endif%}
   </ul>
-
+  
+  {% if user.is_authenticated %}
+  <div style="padding: 10px; background: rgb(91, 243, 116); float: right; margin-top: -60px;"><strong>{{user}}</strong> 
+    
+      <a class="nav-link" href="logout">Logout</a>
+   </div>
+   {%else%}
+   <div style="padding: 10px; background: rgb(243, 91, 91); float: right; margin-top: -60px;"><strong>{{user}}</strong> </div>
+  {%endif%}
 </nav>
 </header>
 
@@ -109,9 +109,18 @@
       <h2>{{author.username}}</h2>
      <h4>{{author.occupation}}</h4>
        <h4>{{author.country}}</h4>
-       <span class="social-link">Instagram</span>
-       <span class="social-link">Github</span>
-       <span class="social-link">Linkedin</span>
+       {%if author.instagram_address %}
+       <a href="{{author.instagram_address}}"> <span class="social-link">Instagram</span></a>
+       {%endif%}
+
+       {%if author.github_address %}
+       <a href="{{author.github_address}}"><span class="social-link">Github</span></a> 
+       {%endif%}
+
+       {%if author.linkedin_address %}
+       <a href="{{author.linkedin_address}}"> <span class="social-link">Linkedin</span> </a>
+
+       {%endif%}
       </div>
     
    
@@ -281,6 +290,7 @@ var csrftoken = getCookie('csrftoken');
     xhrr.open("POST","{% url 'addcmt1' new_blog.id %}",true)
     xhrr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhrr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhrr.setRequestHeader('X-Requested-With','XMLHttpRequest')
     xhrr.send(`cmt-msg=${cmtmsg}`)
 
     xhrr.onreadystatechange = function(){
@@ -337,6 +347,7 @@ function comment_reply(cmt_id){
     xhrr.open("POST","{% url 'reply' new_blog.id %}",true)
     xhrr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhrr.setRequestHeader("X-CSRFToken", csrftoken)
+    xhrr.setRequestHeader('X-Requested-With','XMLHttpRequest')
     xhrr.send(`cmt-msg=${cmtmsg}&cmt-id=${cmt_id}`)
        xhrr.onreadystatechange = function(){
       if(this.readyState==4 && this.status==200){
@@ -384,6 +395,8 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
   function addlike(){
     var xhr = new XMLHttpRequest()
     xhr.open("GET","{% url 'like' new_blog.id %}",true)
+   
+    xhr.setRequestHeader('X-Requested-With','XMLHttpRequest')
     xhr.send()
 
     xhr.onreadystatechange = function(){
@@ -410,6 +423,7 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
 
     var xhr = new XMLHttpRequest()
     xhr.open("GET","{% url 'more' new_blog.id %}")
+    xhr.setRequestHeader('X-Requested-With','XMLHttpRequest')
     xhr.send()
     xhr.onreadystatechange = function(){
 
