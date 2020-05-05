@@ -35,6 +35,7 @@ urlpatterns = [
     path('all_blog',views.all_blog,name="all_blogs"),
     path('like_article/<int:article_id>',views.like_article,name="like"),
     path('view_article/<int:article_id>',views.view_article,name="view_article"),
+    path('notification',views.notifications,name='notification'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

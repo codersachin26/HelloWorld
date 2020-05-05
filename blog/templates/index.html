@@ -56,9 +56,20 @@
     </li>
 
     {%endif%}
+
+    {% if user.is_authenticated %}
+
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'notification' %}"><div> Notification <strong>{{unread}}</strong></div>  </a>
+    </li>
+    {%endif%}
+
   </ul>
   
   {% if user.is_authenticated %}
+
+
+    
   <div style="padding: 10px; background: rgb(91, 243, 116); float: right; margin-top: -60px;"><strong>{{user}}</strong> 
     
       <a class="nav-link" href="logout">Logout</a>
@@ -138,7 +149,7 @@
     <div class="cmt-like" style="position: relative; width: 200px; height: 100px; background: rgb(235, 231, 231);">
       
       Comments {{total_cmt}} <br><br>
-      <button id="like" style="padding: 10px;" ><div id="active" style="color:{{active}};"> Like </div>{{likes}}</button>
+      <button id="like" style="padding: 10px;" ><div id="active" style="color:{{active}};"> <strong>Like</strong> </div>{{likes}}</button>
     </div>
 
     <h1>COMMENTS</h1>
@@ -405,13 +416,13 @@ cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
         console.log(data.ok)
         if(data.ok){
 
-        
         if(document.getElementById('active').style.color=="blue"){
           document.getElementById('active').style.color="black"
         }
         else
         document.getElementById('active').style.color="blue"
         }
+
         else
         window.location = data.url
       }

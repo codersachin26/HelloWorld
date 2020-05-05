@@ -21,12 +21,7 @@
     </div>
 </div>
 
-<div style="width: 200px; height: 150px; background: rgb(114, 98, 98); margin: 20px 20px 20px 50px; text-align: center; ">
-    <span>Total Publish Article</span>
-    <div style="width: 100%; height: 100px; background: rgb(236, 208, 208); margin-top:30px;">
-        <span>5</span>
-    </div>
-</div>
+
 
 
 
@@ -40,9 +35,19 @@
             
            <h4>{{author.occupation}}</h4>
              <h4>{{author.country}}</h4>
+
+             {% if author.instagram_address %}
             <a href="{{author.instagram_address}}"> <span class="social-link">Instagram</span></a>
+            {%endif%}
+
+            {% if author.github_address %}
             <a href="{{author.github_address}}"><span class="social-link">Github</span></a> 
+            {%endif%}
+
+            {% if author.linkedin_address %}
             <a href="{{author.linkedin_address}}"> <span class="social-link">Linkedin</span> </a>
+            {%endif%}
+
             </div>
         
     </div>

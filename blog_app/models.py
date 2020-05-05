@@ -98,3 +98,15 @@ class ArticleLikes(models.Model):
 
     def __str__(self):
         return self.article.title+' '+self.user.username
+
+
+
+class Notification(models.Model):
+    receiverID =   models.IntegerField()
+    sender   =   models.ForeignKey('MyUser',on_delete=models.CASCADE)
+    msg      =   models.CharField(max_length=200)
+    is_read  =   models.BooleanField(default=False)
+    is_del   =   models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.receiverID

@@ -33,11 +33,15 @@ def index(request):
         active='blue'
     else:
         active ='black'
-    context = {'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
+
+    if request.user.is_authenticated:
+        unread = Notification.objects.filter(receiverID=request.user.id,is_read=False).count()
+
+    context = {'unread':unread,'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
     return render(request,'index.html',context)
 
 def all_blog(request):
-    all_blog = Article.objects.all()
+    all_blog = Article.objects.filter(accessible=True)
     user = request.user
     return render(request,'all_blog.html',{'user':user,'all_blog':all_blog})
 
@@ -53,11 +57,11 @@ def author_dashboard(request):
     
         for art in articles:
             newdata = {}
-            newdata["cmt"] = UserComments.objects.filter(article_id=art.id).count()
+            newdata["cmt"] = UserComments.objects.filter(article_id=art.id).count() + ReplyComments.objects.filter(article_id=art.id).count()
             newdata["title"] = art.title
             newdata["id"] = art.id
             newdata["thumbnail"] = art.thumbnail
-            newdata["like"] = ArticleLikes.objects.filter(article_id=art.id).count() + ReplyComments.objects.filter(article_id=art.id).count()
+            newdata["like"] = ArticleLikes.objects.filter(article_id=art.id).count() 
             data.append(newdata)
         author = request.user
 
@@ -134,10 +138,17 @@ def add_cmt(request,article_id):
             u_cmt.u_name = request.user.username
             u_cmt.save()
             usercmt = UserComments.objects.last()
-            serialized_obj = serializers.serialize('json', [usercmt])
-            print(serialized_obj)
+            serialized_obj = serializers.serialize('json',[usercmt])
             data=serialized_obj.strip("[]")
-            print(data)
+
+            mk_notification = Notification()
+            article = Article.objects.get(id=article_id)
+            receiverID =article.author.id
+            senderID = request.user
+            mk_notification.receiverID = receiverID
+            mk_notification.sender  =  senderID
+            mk_notification.msg = request.user.username.upper()+' comment on your '+ article.title+' blog '+'"'+request.POST['cmt-msg']+'"'
+            mk_notification.save()
     
             return JsonResponse(data,safe=False)
 
@@ -159,6 +170,17 @@ def cmt_reply(request,article_id):
             r_cmt.save()
             replytime = ReplyComments.objects.last().cmt_date
             data["cmt_date"] = replytime
+
+            mk_notification = Notification()
+            cmt = UserComments.objects.get(id=cmt_id)
+            article = Article.objects.get(id=article_id)
+            receiverID = cmt.user.id
+            senderID = request.user
+            mk_notification.receiverID = receiverID
+            mk_notification.sender  =  senderID
+            mk_notification.msg = request.user.username.upper()+' reply on your comment "'+cmt.u_msg+'" on blog '+article.title+'"'+request.POST['cmt-msg']+'"'
+            mk_notification.save()
+    
             return JsonResponse(data,safe=False)
 
         else:
@@ -195,6 +217,17 @@ def like_article(request,article_id):
                 like.user_id = request.user.id
                 like.save()
                 dict = {'ok':1}
+
+                mk_notification = Notification()
+                # cmt = UserComments.objects.get(id=cmt_id)
+                article = Article.objects.get(id=article_id)
+                receiverID = article.author.id
+                senderID = request.user
+                mk_notification.receiverID = receiverID
+                mk_notification.sender  =  senderID
+                mk_notification.msg = request.user.username.upper()+' like your '+article.title+' blog '
+                mk_notification.save()
+            
                 return HttpResponse(json.dumps(dict), content_type='application/json')
             else:
                 like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
@@ -230,7 +263,7 @@ def view_article(request,article_id):
         active='blue'
     else:
         active ='black'
-    context = {'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':view_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':cmts.count()}
+    context = {'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':view_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':morecount}
     return render(request,'index.html',context)
 
 
@@ -289,6 +322,15 @@ def more(request,blog_id):
 
 
 
+
+def notifications(request):
+    notification = Notification.objects.filter(receiverID=request.user.id,is_del=False).order_by('-id')[:10]
+    un_read = Notification.objects.filter(receiverID=request.user.id,is_del=False,is_read=False)
+    for r in un_read:
+        r.is_read = True
+        r.save()
+
+    return render(request,'notification.html',{'notification':notification})
 
 
         
