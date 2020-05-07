@@ -110,3 +110,10 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.receiverID
+
+
+class Token(models.Model):
+    token = models.IntegerField()
+    userId = models.IntegerField()
+    tokenID = models.IntegerField()
+    is_valid = models.BooleanField(default=False)

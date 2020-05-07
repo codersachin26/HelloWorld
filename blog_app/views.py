@@ -1,10 +1,13 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,Http404,JsonResponse
-from .forms import MyUserForm,LoginForm,ArticleForm,MyAuthorForm
+from .forms import *
 from .models import *
 from django.contrib.auth import authenticate,login,logout
 import json
 from django.core import serializers
+from django.core.mail import send_mail
+from blog.settings import EMAIL_HOST_USER
+from datetime import datetime
 
 
 
@@ -15,7 +18,7 @@ from django.core import serializers
 
 def index(request):
     new_blog = Article.objects.last()
-    author = MyUser.objects.get(id=new_blog.author_id,is_author=True)
+    author = MyUser.objects.get(id=new_blog.author_id)
     related_articles = Article.objects.filter(category=new_blog.category,accessible=True)
     user = request.user
     total_cmts = UserComments.objects.filter(article_id=new_blog.id).count()
@@ -36,6 +39,8 @@ def index(request):
 
     if request.user.is_authenticated:
         unread = Notification.objects.filter(receiverID=request.user.id,is_read=False).count()
+    else:
+        unread =None
 
     context = {'unread':unread,'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
     return render(request,'index.html',context)
@@ -331,6 +336,64 @@ def notifications(request):
         r.save()
 
     return render(request,'notification.html',{'notification':notification})
+
+
+
+def reset_user_password(request):
+    if request.method == 'POST':
+        user =  Reset_PassWord_Form(request.POST)
+        if MyUser.objects.filter(email=user['email'].value()).exists():
+            subject = 'Reset Password'
+            message = "Don't share this code to anyone!  \n CODE = 8888 "
+            recepient = str(user['email'].value())
+            new_token = Token()
+            tokenID = int(datetime.utcnow().timestamp())
+            userID = MyUser.objects.get(email=user['email'].value()).id
+            new_token.tokenID =  tokenID
+            new_token.token = 8888
+            new_token.userId = userID
+            new_token.save()
+            # token_id = Token.objects.get(userId=userID,id=tokenID)
+            request.session['token_id'] = str(tokenID)
+            send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+            return render(request, 'valid_token.html')
+        else:
+            return HttpResponse('wrong email id')
+    else:
+        form =  Reset_PassWord_Form()
+        return render(request, 'pass_reset_form.html', {'form':form})
+
+
+def validated_token(request):
+    if request.method == 'POST':
+        token = int(request.POST.get('token'))
+        print(token)
+        print(type(token))
+        token_id = int(request.session['token_id'])
+        valid_token = Token.objects.get(tokenID=token_id)
+        print(valid_token.token)
+        print(valid_token.tokenID)
+        print(type(valid_token.token))
+        if token == valid_token.token:
+            valid_token.is_valid = True
+            return render(request, 'create_new_pass.html')
+        else:
+            return HttpResponse('not valid token') 
+
+
+
+def create_new_password(request): 
+    token_id = int(request.session['token_id'])
+    is_valid = Token.objects.get(tokenID=token_id)
+    if is_valid:
+        new_pass = request.POST.get('pass1')
+        user = MyUser.objects.get(id=is_valid.userId)
+        user.set_password(new_pass)
+        user.save()
+        return HttpResponse('done')
+    else:
+        return HttpResponse('not valid user')
+   
 
 
         

@@ -22,5 +22,11 @@ class ArticleForm(forms.ModelForm):
         model = Article
         fields = ['title','thumbnail','category','content']
 
+class Reset_PassWord_Form(forms.Form):
+    email = forms.EmailField()
+
+    def __str__(self):
+        return self.email
+
 
 

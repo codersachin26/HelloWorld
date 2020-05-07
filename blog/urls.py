@@ -36,6 +36,9 @@ urlpatterns = [
     path('like_article/<int:article_id>',views.like_article,name="like"),
     path('view_article/<int:article_id>',views.view_article,name="view_article"),
     path('notification',views.notifications,name='notification'),
+    path('reset_password_form',views.reset_user_password,name='reset-password-form'),
+    path('validated_token',views.validated_token,name='validated-token'),
+    path('create_new_pass',views.create_new_password,name='create-new-password')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
