@@ -145,15 +145,15 @@ def add_cmt(request,article_id):
             usercmt = UserComments.objects.last()
             serialized_obj = serializers.serialize('json',[usercmt])
             data=serialized_obj.strip("[]")
-
-            mk_notification = Notification()
-            article = Article.objects.get(id=article_id)
-            receiverID =article.author.id
-            senderID = request.user
-            mk_notification.receiverID = receiverID
-            mk_notification.sender  =  senderID
-            mk_notification.msg = request.user.username.upper()+' comment on your '+ article.title+' blog '+'"'+request.POST['cmt-msg']+'"'
-            mk_notification.save()
+            if not Article.objects.filter(author_id=request.user.id).exists():
+                mk_notification = Notification()
+                article = Article.objects.get(id=article_id)
+                receiverID =article.author.id
+                senderID = request.user
+                mk_notification.receiverID = receiverID
+                mk_notification.sender  =  senderID
+                mk_notification.msg = request.user.username.upper()+' comment on your '+ article.title+' blog '+'"'+request.POST['cmt-msg']+'"'
+                mk_notification.save()
     
             return JsonResponse(data,safe=False)
 
@@ -222,16 +222,15 @@ def like_article(request,article_id):
                 like.user_id = request.user.id
                 like.save()
                 dict = {'ok':1}
-
-                mk_notification = Notification()
-                # cmt = UserComments.objects.get(id=cmt_id)
-                article = Article.objects.get(id=article_id)
-                receiverID = article.author.id
-                senderID = request.user
-                mk_notification.receiverID = receiverID
-                mk_notification.sender  =  senderID
-                mk_notification.msg = request.user.username.upper()+' like your '+article.title+' blog '
-                mk_notification.save()
+                if not Article.objects.filter(author_id=request.user.id).exists():
+                    mk_notification = Notification()
+                    article = Article.objects.get(id=article_id)
+                    receiverID = article.author.id
+                    senderID = request.user
+                    mk_notification.receiverID = receiverID
+                    mk_notification.sender  =  senderID
+                    mk_notification.msg = request.user.username.upper()+' like your '+article.title+' blog '
+                    mk_notification.save()
             
                 return HttpResponse(json.dumps(dict), content_type='application/json')
             else:
