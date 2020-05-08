@@ -17,32 +17,36 @@ from datetime import datetime
 # Create your views here.
 
 def index(request):
-    new_blog = Article.objects.last()
-    author = MyUser.objects.get(id=new_blog.author_id)
-    related_articles = Article.objects.filter(category=new_blog.category,accessible=True)
-    user = request.user
-    total_cmts = UserComments.objects.filter(article_id=new_blog.id).count()
-    cmts = UserComments.objects.filter(article_id=new_blog.id).order_by('-id')[:4]
-    morecount = UserComments.objects.all().count()
-    if morecount > 4:
-        more = True
-        request.session['next'] = '2'
-    else:
-        more = False     
-    replys = ReplyComments.objects.filter(article_id=new_blog.id)
-    likes = ArticleLikes.objects.filter(article_id=new_blog.id).count()
-    userlike = ArticleLikes.objects.filter(article_id=new_blog.id,user_id=request.user.id).exists()
-    if userlike:
-        active='blue'
-    else:
-        active ='black'
+    try:
+        new_blog = Article.objects.last()
+        author = MyUser.objects.get(id=new_blog.author_id)
+        related_articles = Article.objects.filter(category=new_blog.category,accessible=True)
+        user = request.user
+        total_cmts = UserComments.objects.filter(article_id=new_blog.id).count()
+        cmts = UserComments.objects.filter(article_id=new_blog.id).order_by('-id')[:4]
+        morecount = UserComments.objects.all().count()
+        if morecount > 4:
+            more = True
+            request.session['next'] = '2'
+        else:
+            more = False     
+        replys = ReplyComments.objects.filter(article_id=new_blog.id)
+        likes = ArticleLikes.objects.filter(article_id=new_blog.id).count()
+        userlike = ArticleLikes.objects.filter(article_id=new_blog.id,user_id=request.user.id).exists()
+        if userlike:
+            active='blue'
+        else:
+            active ='black'
 
-    if request.user.is_authenticated:
-        unread = Notification.objects.filter(receiverID=request.user.id,is_read=False).count()
-    else:
-        unread =None
+        if request.user.is_authenticated:
+            unread = Notification.objects.filter(receiverID=request.user.id,is_read=False).count()
+        else:
+            unread =None
 
-    context = {'unread':unread,'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
+        context = {'unread':unread,'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
+    except Article.DoesNotExist:
+        return render(request,'UnderContraction.html')
+
     return render(request,'index.html',context)
 
 def all_blog(request):
@@ -395,7 +399,26 @@ def create_new_password(request):
    
 
 
-        
+def is_username_valid(request):
+    username = request.POST.get('username')
+    is_taken = MyUser.objects.filter(username=username).exists()
+    if is_taken:
+        data = {'ok':0}
+    else:
+        data = {'ok':1}
+
+    return JsonResponse(data)
+
+def is_email_valid(request):
+    email = request.POST.get('email')
+    is_taken = MyUser.objects.filter(email=email).exists()
+    if is_taken:
+        data = {'ok':0}
+    else:
+        data = {'ok':1}
+
+    return JsonResponse(data)
+
 
 
 
