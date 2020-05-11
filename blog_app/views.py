@@ -425,8 +425,18 @@ def author_all_blog(request):
     if request.user.is_authenticated:
         if request.user.is_author:
             blogs = Blog.objects.filter(author_id=request.user.id, accessible=True)
-            return render(request,'author_all_blog.html',{'blogs':blogs})
+            blog_data = []
+            for blog in blogs:
+                newdata = {}
+                newdata["cmt"] = Comments.objects.filter(blog_id=blog.id).count() + CommentsReply.objects.filter(blog_id=blog.id).count()
+                newdata["title"] = blog.title
+                newdata["id"] = blog.id
+                newdata["thumbnail"] = blog.thumbnail
+                newdata["like"] = Likes.objects.filter(blog_id=blog.id).count()
+                blog_data.append(newdata)
                 
+            return render(request,'author_all_blog.html',{'blogs':blog_data})
+                    
 
 
 
