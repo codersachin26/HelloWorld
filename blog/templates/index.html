@@ -19,7 +19,7 @@
   <ul class="navbar-nav">
     
     <div class="web-title">
-    <img src="static/logo.png" alt="logo">
+    <img src="{% static '/logo.png' %}" alt="logo">
      </div>
     <li class="nav-item">
       <a class="nav-link" href="\">Home</a>
@@ -249,8 +249,10 @@
   <a href="{% url 'view_article' article.id %}">
   <div style="float: left; width: 80%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
     <img src="/media/{{article.thumbnail}}" style="width: 250px; height: 200px; float: left;" alt="">
-    <div><h1>{{article.title}}</h1></div>
+     <div style="float: right; padding: 10px; margin-right: 400px; margin-top: 50px;"> 
+    <div style="width: 50%;"><h1>{{article.title}}</h1></div>
     <label for="">Author </label><span style="color: black;">{{article.author_name}}</span>
+  </div>
   </div>
 </a>
 {%endifequal%}
@@ -349,9 +351,8 @@ cmtdiv.insertBefore(tNew, cmtdiv.lastChild);
      // add-user-reply
 
 function comment_reply(cmt_id){
-  console.log(cmt_id);
-  let cmtmsg = document.getElementById(`msg-${cmt_id}`).value
-  console.log(cmtmsg);
+
+    let cmtmsg = document.getElementById(`msg-${cmt_id}`).value
     var xhrr = new XMLHttpRequest()
     xhrr.open("POST","{% url 'reply' new_blog.id %}",true)
     xhrr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -361,11 +362,8 @@ function comment_reply(cmt_id){
        xhrr.onreadystatechange = function(){
       if(this.readyState==4 && this.status==200){
         var data1 = this.responseText
-        console.log(data1);
         var data = JSON.parse(data1)
-        console.log(data);
-        
-
+      
         if(data.ok){
          
             window.location = data.url
@@ -374,17 +372,17 @@ function comment_reply(cmt_id){
          
         document.getElementById(`cmt_reply-${cmt_id}`).reset()
 
-var tNew = document.createElement('div');
- tNew.innerHTML = `<div class="sub-cmt">
-        <div class="sub-user-img"> <img src="/media/{{user.profile_pic}}" alt=""></div>
-        <div class="user-msg">
-        <h2>{{user.username}}</h2>
-        <h6 style="font-style: italic;">{{reply.cmt_date}}</h6>
-        <div style="margin-right: 20px; margin-top: -20px;">${cmtmsg}</div>
-        </div>
-      </div>`
-var cmtdiv = document.getElementById(`div-${cmt_id}`);
-cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
+          var tNew = document.createElement('div');
+          tNew.innerHTML = `<div class="sub-cmt">
+                  <div class="sub-user-img"> <img src="/media/{{user.profile_pic}}" alt=""></div>
+                  <div class="user-msg">
+                  <h2>{{user.username}}</h2>
+                  <h6 style="font-style: italic;">{{reply.cmt_date}}</h6>
+                  <div style="margin-right: 20px; margin-top: -20px;">${cmtmsg}</div>
+                  </div>
+                </div>`
+          var cmtdiv = document.getElementById(`div-${cmt_id}`);
+          cmtdiv.insertBefore(tNew, cmtdiv.firstChild);
 
  
 

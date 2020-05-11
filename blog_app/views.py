@@ -18,7 +18,11 @@ from datetime import datetime
 
 def index(request):
     try:
-        new_blog = Blog.objects.last()
+        blogs = Blog.objects.all().order_by('-id')
+        for blog in blogs:
+            if blog.accessible:
+                new_blog = blog
+                break
         author = MyUser.objects.get(id=new_blog.author_id)
         related_articles = Blog.objects.filter(category=new_blog.category, accessible=True)
         user = request.user
@@ -30,7 +34,7 @@ def index(request):
             request.session['next'] = '2'
         else:
             more = False     
-        replys = CommentsReply.objects.filter(blog_id=new_blog.id)
+        replys = CommentsReply.objects.filter(blog_id=new_blog.id).order_by('-id')
         likes = Likes.objects.filter(blog_id=new_blog.id).count()
         userlike = Likes.objects.filter(blog_id=new_blog.id, user_id=request.user.id).exists()
         if userlike:
@@ -173,7 +177,6 @@ def cmt_reply(request,blog_id):
         data = {}
         if request.user.is_authenticated:
             cmt_id = request.POST['cmt-id']
-            print(cmt_id)
             r_cmt = CommentsReply()
             r_cmt.blog_id = blog_id
             r_cmt.main_cmt_id = cmt_id
@@ -182,16 +185,16 @@ def cmt_reply(request,blog_id):
             r_cmt.save()
             replytime = CommentsReply.objects.last().cmt_date
             data["cmt_date"] = replytime
-
-            mk_notification = Notification()
-            cmt = Comments.objects.get(id=cmt_id)
-            article = Blog.objects.get(id=blog_id)
-            receiverID = cmt.user.id
-            senderID = request.user
-            mk_notification.receiverID = receiverID
-            mk_notification.sender  =  senderID
-            mk_notification.msg = request.user.username.upper()+' reply on your comment "'+cmt.cmt_msg+'" on blog '+article.title+'"'+request.POST['cmt-msg']+'"'
-            mk_notification.save()
+            if not request.user.id == Comments.objects.get(id=cmt_id).user.id:
+                mk_notification = Notification()
+                cmt = Comments.objects.get(id=cmt_id)
+                article = Blog.objects.get(id=blog_id)
+                receiverID = cmt.user.id
+                senderID = request.user
+                mk_notification.receiverID = receiverID
+                mk_notification.sender  =  senderID
+                mk_notification.msg = request.user.username.upper()+' reply on your comment "'+cmt.cmt_msg+'" on blog '+article.title+'"'+request.POST['cmt-msg']+'"'
+                mk_notification.save()
     
             return JsonResponse(data,safe=False)
 
@@ -336,6 +339,7 @@ def more(request,blog_id):
 def notifications(request):
     notification = Notification.objects.filter(receiverID=request.user.id,is_del=False).order_by('-id')[:10]
     un_read = Notification.objects.filter(receiverID=request.user.id,is_del=False,is_read=False)
+    print(notification)
     for r in un_read:
         r.is_read = True
         r.save()
@@ -434,7 +438,7 @@ def author_all_blog(request):
                 newdata["thumbnail"] = blog.thumbnail
                 newdata["like"] = Likes.objects.filter(blog_id=blog.id).count()
                 blog_data.append(newdata)
-                
+            print(blog_data)    
             return render(request,'author_all_blog.html',{'blogs':blog_data})
                     
 

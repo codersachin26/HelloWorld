@@ -8,7 +8,9 @@
 <div style=" width: 95%; height: auto; background: rgb(189, 185, 185); float: left; margin: 20px;">
     <h1 style="width: 80%; text-align: center;">Your Articles</h1> <hr>
     <ul>
-  
+      {% if blog is None %}
+      <h2>there is no article</h2> 
+      {% endif %}
     {% for blog in blogs%}
     <li style="list-style: none;">
       <a href="{% url 'view_article' blog.id %}">
