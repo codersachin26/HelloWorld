@@ -12,13 +12,12 @@ from .managers import CustomUserManager
 class MyUser(AbstractBaseUser,PermissionsMixin):
     f_name = models.CharField(max_length=20,null=True)
     s_name = models.CharField(max_length=20,null=True)
-    email = models.EmailField(max_length=20, unique=True)
+    email = models.EmailField(max_length=30, unique=True)
     username = models.CharField(max_length=25,unique=True)
     profile_pic = models.ImageField(upload_to='user_pic')
     date_joined = models.DateField(default=timezone.now)
     occupation = models.CharField(max_length=50,null=True)
     country = models.CharField(max_length=15,null=True)
-    authorise = models.BooleanField(default=False)
     github_address = models.CharField(blank=True,max_length=50,null=True)
     linkedin_address = models.CharField(blank=True,max_length=50,null=True)
     instagram_address = models.CharField(blank=True,max_length=50,null=True)
@@ -26,7 +25,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
     is_author = models.BooleanField(default=False) 
     is_user = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    password = models.CharField(max_length=25)
+    password = models.CharField(max_length=45)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -49,7 +48,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
 
 
 
-class Article(models.Model):
+class Blog(models.Model):
     type =(
         ("Programming","Programming"),
         ("Framework","Framework"),
@@ -72,10 +71,10 @@ class Article(models.Model):
 
 
 
-class UserComments(models.Model):
+class Comments(models.Model):
     user = models.ForeignKey('MyUser',blank=True,null=True,on_delete=models.CASCADE)
-    article = models.ForeignKey('Article',on_delete=models.CASCADE)
-    u_msg = models.CharField(max_length=200)
+    blog = models.ForeignKey('Blog', on_delete=models.CASCADE)
+    cmt_msg = models.CharField(max_length=200)
     u_name = models.CharField(max_length=25)
     cmt_date = models.DateTimeField(default=timezone.now)
 
@@ -83,9 +82,9 @@ class UserComments(models.Model):
         return self.u_name
 
 
-class ReplyComments(models.Model):
-    article = models.ForeignKey('Article',on_delete=models.CASCADE)
-    main_cmt = models.ForeignKey('UserComments',on_delete=models.CASCADE)
+class CommentsReply(models.Model):
+    blog = models.ForeignKey('Blog', on_delete=models.CASCADE)
+    main_cmt = models.ForeignKey('Comments',on_delete=models.CASCADE)
     r_msg = models.CharField(max_length=200)
     u_name = models.CharField(max_length=25)
     cmt_date = models.DateTimeField(default=timezone.now)
@@ -93,12 +92,12 @@ class ReplyComments(models.Model):
     def __str__(self):
         return 'subcmt '+ self.u_name
 
-class ArticleLikes(models.Model):
-    article = models.ForeignKey('Article',on_delete=models.CASCADE)
+class Likes(models.Model):
+    blog = models.ForeignKey('Blog', on_delete=models.CASCADE)
     user = models.ForeignKey('MyUser',on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.article.title+' '+self.user.username
+        return self.blog.title + ' ' + self.user.username
 
 
 

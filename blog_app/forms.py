@@ -1,5 +1,5 @@
 from django import forms
-from .models import MyUser,Article
+from .models import MyUser,Blog
 
 class MyAuthorForm(forms.ModelForm):
     class Meta:
@@ -19,7 +19,7 @@ class LoginForm(forms.ModelForm):
 
 class ArticleForm(forms.ModelForm):
     class Meta:
-        model = Article
+        model = Blog
         fields = ['title','thumbnail','category','content']
 
 class Reset_PassWord_Form(forms.Form):

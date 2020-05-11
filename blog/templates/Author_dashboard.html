@@ -1,10 +1,16 @@
-{% extends 'index.html' %}
+ {% extends 'index.html' %}
 
 {% block body%}
 
- <li class="nav-item">
-    <a class="nav-link" href="new_article">Create_new_article</a>
-  </li>
+<div style="width: 90%; height: auto; margin-bottom: 20px;">
+
+<h1 style=" text-align: center; margin-left: 50px; margin-right: 50px; background: rgb(139, 133, 133);">Dashboard</h1>
+
+<div style="float: left; margin-left: 100px; margin-top: 50px;">
+    <a class="nav-link" href="/new_article">Create_new_article</a><br><br><br>
+    <a class="nav-link" href="/author_all_blog">All Blog</a>
+  </div>
+
 
 <ul style="display: flex;">
 
@@ -53,31 +59,10 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
 </ul>
-<div style=" width: 60%; height: auto; background: rgb(189, 185, 185); float: left; margin: 20px;">
-  <h1>Your Articles</h1>
 
-  {% for article in data%}
-    <a href="{% url 'view_article' article.id %}">
-  <div style="float: left; width: 80%; height: auto; background: rgb(87, 90, 92);   margin: 20px 10px 20px 20px;">
-    <img src="/media/{{article.thumbnail}}" style="width: 250px; height: 200px;" alt="">
-    <h1>{{article.title}}</h1>
-    <div style="float: right; margin-top: -200px; margin-right: 100px;">
-        <label for="">Comments </label><em>{{article.cmt}}</em><br><br>
-        <label for="">Like </label><em>{{article.like}}</em>
-    </div>
-  </div>
-</a>
-  {% endfor %}
+
+
 </div>
-
-
 
 {% endblock%}

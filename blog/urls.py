@@ -40,7 +40,8 @@ urlpatterns = [
     path('validated_token',views.validated_token,name='validated-token'),
     path('create_new_pass',views.create_new_password,name='create-new-password'),
     path('is_username_taken',views.is_username_valid,name='is-username-taken'),
-    path('is_email_taken',views.is_email_valid,name='is-email-taken')
+    path('is_email_taken',views.is_email_valid,name='is-email-taken'),
+    path('author_all_blog',views.author_all_blog,name='author-all-blog'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

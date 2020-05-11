@@ -18,21 +18,21 @@ from datetime import datetime
 
 def index(request):
     try:
-        new_blog = Article.objects.last()
+        new_blog = Blog.objects.last()
         author = MyUser.objects.get(id=new_blog.author_id)
-        related_articles = Article.objects.filter(category=new_blog.category,accessible=True)
+        related_articles = Blog.objects.filter(category=new_blog.category, accessible=True)
         user = request.user
-        total_cmts = UserComments.objects.filter(article_id=new_blog.id).count()
-        cmts = UserComments.objects.filter(article_id=new_blog.id).order_by('-id')[:4]
-        morecount = UserComments.objects.all().count()
+        total_cmts = Comments.objects.filter(blog_id=new_blog.id).count()
+        cmts = Comments.objects.filter(blog_id=new_blog.id).order_by('-id')[:4]
+        morecount = Comments.objects.all().count()
         if morecount > 4:
             more = True
             request.session['next'] = '2'
         else:
             more = False     
-        replys = ReplyComments.objects.filter(article_id=new_blog.id)
-        likes = ArticleLikes.objects.filter(article_id=new_blog.id).count()
-        userlike = ArticleLikes.objects.filter(article_id=new_blog.id,user_id=request.user.id).exists()
+        replys = CommentsReply.objects.filter(blog_id=new_blog.id)
+        likes = Likes.objects.filter(blog_id=new_blog.id).count()
+        userlike = Likes.objects.filter(blog_id=new_blog.id, user_id=request.user.id).exists()
         if userlike:
             active='blue'
         else:
@@ -44,13 +44,16 @@ def index(request):
             unread =None
 
         context = {'unread':unread,'more':more,'related_articles':related_articles,'active':active,'user':user,'new_blog':new_blog,'cmts':cmts,'replys':replys,'author':author,'likes':likes,'total_cmt':total_cmts}
-    except Article.DoesNotExist:
-        return render(request,'UnderContraction.html')
+    except AttributeError:
+        return render(request,'UnderContruction.html')
 
     return render(request,'index.html',context)
 
+
+    
+
 def all_blog(request):
-    all_blog = Article.objects.filter(accessible=True)
+    all_blog = Blog.objects.filter(accessible=True)
     user = request.user
     return render(request,'all_blog.html',{'user':user,'all_blog':all_blog})
 
@@ -59,18 +62,18 @@ def all_blog(request):
 
 def author_dashboard(request):
     if request.user.is_author:
-        articles = Article.objects.filter(author_id=request.user.id,accessible=True)
-        panding_article = Article.objects.filter(author_id=request.user.id,accessible=False).count()
+        articles = Blog.objects.filter(author_id=request.user.id, accessible=True)
+        panding_article = Blog.objects.filter(author_id=request.user.id, accessible=False).count()
         accesible_article = articles.count()
         data = []
     
         for art in articles:
             newdata = {}
-            newdata["cmt"] = UserComments.objects.filter(article_id=art.id).count() + ReplyComments.objects.filter(article_id=art.id).count()
+            newdata["cmt"] = Comments.objects.filter(blog_id=art.id).count() + CommentsReply.objects.filter(blog_id=art.id).count()
             newdata["title"] = art.title
             newdata["id"] = art.id
             newdata["thumbnail"] = art.thumbnail
-            newdata["like"] = ArticleLikes.objects.filter(article_id=art.id).count() 
+            newdata["like"] = Likes.objects.filter(blog_id=art.id).count()
             data.append(newdata)
         author = request.user
 
@@ -137,21 +140,21 @@ def author_register(request):
 
         
 
-def add_cmt(request,article_id):
+def add_cmt(request,blog_id):
     if request.is_ajax():
         if request.user.is_authenticated:
-            u_cmt = UserComments()
+            u_cmt = Comments()
             u_cmt.user_id = request.user.id
-            u_cmt.article_id = article_id
-            u_cmt.u_msg = request.POST['cmt-msg']
+            u_cmt.blog_id = blog_id
+            u_cmt.cmt_msg = request.POST['cmt-msg']
             u_cmt.u_name = request.user.username
             u_cmt.save()
-            usercmt = UserComments.objects.last()
+            usercmt = Comments.objects.last()
             serialized_obj = serializers.serialize('json',[usercmt])
             data=serialized_obj.strip("[]")
-            if not Article.objects.filter(author_id=request.user.id).exists():
+            if not Blog.objects.filter(author_id=request.user.id).exists():
                 mk_notification = Notification()
-                article = Article.objects.get(id=article_id)
+                article = Blog.objects.get(id=blog_id)
                 receiverID =article.author.id
                 senderID = request.user
                 mk_notification.receiverID = receiverID
@@ -165,24 +168,24 @@ def add_cmt(request,article_id):
             return  JsonResponse({'ok':1,'url':'http://127.0.0.1:8000/user_register'})
 
 
-def cmt_reply(request,article_id):
+def cmt_reply(request,blog_id):
     if request.is_ajax():
         data = {}
         if request.user.is_authenticated:
             cmt_id = request.POST['cmt-id']
             print(cmt_id)
-            r_cmt = ReplyComments()
-            r_cmt.article_id = article_id
+            r_cmt = CommentsReply()
+            r_cmt.blog_id = blog_id
             r_cmt.main_cmt_id = cmt_id
             r_cmt.r_msg = request.POST['cmt-msg']
             r_cmt.u_name = request.user.username
             r_cmt.save()
-            replytime = ReplyComments.objects.last().cmt_date
+            replytime = CommentsReply.objects.last().cmt_date
             data["cmt_date"] = replytime
 
             mk_notification = Notification()
-            cmt = UserComments.objects.get(id=cmt_id)
-            article = Article.objects.get(id=article_id)
+            cmt = Comments.objects.get(id=cmt_id)
+            article = Blog.objects.get(id=blog_id)
             receiverID = cmt.user.id
             senderID = request.user
             mk_notification.receiverID = receiverID
@@ -217,18 +220,18 @@ def new_article(request):
 
 
 
-def like_article(request,article_id):
+def like_article(request,blog_id):
     if request.is_ajax():
         if request.user.is_authenticated:
-            if not ArticleLikes.objects.filter(article_id=article_id,user_id=request.user.id).exists():
-                like = ArticleLikes()
-                like.article_id = article_id
+            if not Likes.objects.filter(blog_id=blog_id, user_id=request.user.id).exists():
+                like = Likes()
+                like.blog_id = blog_id
                 like.user_id = request.user.id
                 like.save()
                 dict = {'ok':1}
-                if not Article.objects.filter(author_id=request.user.id).exists():
+                if not Blog.objects.filter(author_id=request.user.id).exists():
                     mk_notification = Notification()
-                    article = Article.objects.get(id=article_id)
+                    article = Blog.objects.get(id=blog_id)
                     receiverID = article.author.id
                     senderID = request.user
                     mk_notification.receiverID = receiverID
@@ -238,7 +241,7 @@ def like_article(request,article_id):
             
                 return HttpResponse(json.dumps(dict), content_type='application/json')
             else:
-                like = ArticleLikes.objects.get(article_id=article_id,user_id=request.user.id)
+                like = Likes.objects.get(blog_id=blog_id, user_id=request.user.id)
                 like.delete()
                 dict = {'ok':1}
                 return HttpResponse(json.dumps(dict), content_type='application/json')
@@ -249,16 +252,16 @@ def like_article(request,article_id):
     
 
 
-def view_article(request,article_id):
-    view_blog = Article.objects.get(id=article_id)
+def view_article(request,blog_id):
+    view_blog = Blog.objects.get(id=blog_id)
     author = MyUser.objects.get(id=view_blog.author_id,is_author=True)
-    related_articles = Article.objects.filter(category=view_blog.category,accessible=True)
+    related_articles = Blog.objects.filter(category=view_blog.category, accessible=True)
     user = request.user
-    cmts = UserComments.objects.filter(article_id=view_blog.id).order_by('-id')[:4]
-    replys = ReplyComments.objects.filter(article_id=view_blog.id)
-    likes = ArticleLikes.objects.filter(article_id=view_blog.id).count()
-    userlike = ArticleLikes.objects.filter(article_id=view_blog.id,user_id=request.user.id).exists()
-    morecount = UserComments.objects.filter(article_id=view_blog.id).count()
+    cmts = Comments.objects.filter(blog_id=view_blog.id).order_by('-id')[:4]
+    replys = CommentsReply.objects.filter(blog_id=view_blog.id)
+    likes = Likes.objects.filter(blog_id=view_blog.id).count()
+    userlike = Likes.objects.filter(blog_id=view_blog.id, user_id=request.user.id).exists()
+    morecount = Comments.objects.filter(blog_id=view_blog.id).count()
     print(morecount)
 
     if morecount > 4:
@@ -285,9 +288,8 @@ def more(request,blog_id):
         user_cmts ={}
         no = int(request.session['next']) 
         more = False
-        c = UserComments.objects.filter(article_id=blog_id).order_by('-id').count()
-        cmts = UserComments.objects.filter(article_id=blog_id).order_by('-id')[(no-1)*4:no*4]
-        next = UserComments.objects.filter(article_id=blog_id).order_by('-id')[((no)*4):(no+1)*4].exists()
+        cmts = Comments.objects.filter(blog_id=blog_id).order_by('-id')[(no - 1) * 4:no * 4]
+        next = Comments.objects.filter(blog_id=blog_id).order_by('-id')[((no) * 4):(no + 1) * 4].exists()
         all_cmts = []
         for cmt in cmts:
             user_cmts ={}
@@ -295,20 +297,20 @@ def more(request,blog_id):
                 'profile_pic':str(cmt.user.profile_pic),
                 'username': cmt.u_name,
                 'cmtmsg': cmt.u_msg,
-                'article_id': cmt.article.id,
+                'blog_id': cmt.article.id,
                 'cmt_date' :  str(cmt.cmt_date),
                 'id' : cmt.id
             }
             user_cmts['cmt'] = usercmt
             replylist = []
-            replys = ReplyComments.objects.filter(article_id=blog_id,main_cmt=cmt.id)
+            replys = CommentsReply.objects.filter(blog_id=blog_id, main_cmt=cmt.id)
             for rply in replys:
                 reply = {
                 'profile_pic': str(rply.main_cmt.user.profile_pic),
                 'username': rply.u_name,
                 'r_msg': rply.r_msg,
                 'cmt_id': cmt.id,
-                'article_id': rply.article.id,
+                'blog_id': rply.article.id,
                 'cmt_date' :  str(rply.cmt_date)
                 }
                 replylist.append(reply)
@@ -356,7 +358,6 @@ def reset_user_password(request):
             new_token.token = 8888
             new_token.userId = userID
             new_token.save()
-            # token_id = Token.objects.get(userId=userID,id=tokenID)
             request.session['token_id'] = str(tokenID)
             send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
             return render(request, 'valid_token.html')
@@ -418,6 +419,14 @@ def is_email_valid(request):
         data = {'ok':1}
 
     return JsonResponse(data)
+
+
+def author_all_blog(request):
+    if request.user.is_authenticated:
+        if request.user.is_author:
+            blogs = Blog.objects.filter(author_id=request.user.id, accessible=True)
+            return render(request,'author_all_blog.html',{'blogs':blogs})
+                
 
 
 

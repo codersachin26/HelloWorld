@@ -3,17 +3,20 @@
 
 {% block body %}
  {% for blog in all_blog%}
+
+ <h1 style="padding: 10px; ">ALL BLOGS</h1> <hr>
+
    <a href="{% url 'view_article' blog.id %}">
- <div style="width: 80%; height: 450px; background: rgb(168, 161, 161); margin-top: 20px; border: 2px solid lavender;">
-    <div class="title">
+ <div style="width: 60%; height: 250px; background: rgb(168, 161, 161); margin-top: 20px; margin-left: 60px; margin-bottom: 50px; border: 2px solid lavender;">
+    <div style="float: right; margin-right: 100px;">
     <h2>{{blog.title}}</h2>
     <h4>{{blog.upload_date}}</h4>
+    <h4>Author: {{blog.author_name}}</h4>
   </div>
-    <div class="article">
+    <div style="float: left; width: 200px; height: 200px; margin-top: 20px; margin-left: 50px;">
 
-      <div class="article-img"> <img src="/media/{{blog.thumbnail}}" alt="img"></div>
+      <div> <img src="/media/{{blog.thumbnail}}" alt="img"></div>
 
-      <!-- <p> {{blog.content}}</p> -->
 
 
     </div>

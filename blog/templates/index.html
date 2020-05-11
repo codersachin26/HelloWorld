@@ -13,14 +13,14 @@
 
 <!-- A grey horizontal navbar that becomes vertical on small screens -->
 <header>
-<nav class="navbar navbar-expand-sm bg-light">
+<nav>
 
   <!-- Links -->
   <ul class="navbar-nav">
     
     <div class="web-title">
-    <h2 style="font-family:Lucida Console, Courier, monospace;">MyBlogApp</h2><br>
-  </div>
+    <img src="static/logo.png" alt="logo">
+     </div>
     <li class="nav-item">
       <a class="nav-link" href="\">Home</a>
     </li>
@@ -89,7 +89,7 @@
   <div class="left-container">
     <div class="title">
     <h2>{{new_blog.title}}</h2>
-    <h4>{{new_blog.upload_date}}</h4>
+    <h4 style="margin-top: -10px; margin-left: 30px;">{{new_blog.upload_date}}</h4> <br>
   </div>
     <div class="article">
 
@@ -118,8 +118,8 @@
     <div class="author-img"> <img src="/media/{{author.profile_pic}}" alt=""></div>
     <div class="author-info">
       <h2>{{author.username}}</h2>
-     <h4>{{author.occupation}}</h4>
-       <h4>{{author.country}}</h4>
+     <h4 style="margin-left: 10px;">{{author.occupation}}</h4>
+       <h4 style="margin-left: 10px;">{{author.country}}</h4>
        {%if author.instagram_address %}
        <a href="{{author.instagram_address}}"> <span class="social-link">Instagram</span></a>
        {%endif%}
@@ -146,7 +146,7 @@
 
   <div class="cmt-box">
 
-    <div class="cmt-like" style="position: relative; width: 200px; height: 100px; background: rgb(235, 231, 231);">
+    <div class="cmt-like" style="margin-left: 10px; text-align: center; position: relative; width: 200px; height: 100px; background: rgb(235, 231, 231);">
       
       Comments {{total_cmt}} <br><br>
       <button id="like" style="padding: 10px;" ><div id="active" style="color:{{active}};"> <strong>Like</strong> </div>{{likes}}</button>
