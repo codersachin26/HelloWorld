@@ -168,7 +168,7 @@
         <div class="user-msg">
         <h2>{{cmt.u_name}}</h2>
         <h6 style="font-style: italic;">{{cmt.cmt_date}}</h6>
-        <div style="margin-right: 20px; margin-top: -20px;">{{cmt.u_msg}}</div>
+        <div style="margin-right: 20px; margin-top: -20px;">{{cmt.cmt_msg}}</div>
         
         <form id="cmt_reply-{{cmt.id}}" method="POST">
           {% csrf_token%}
@@ -210,9 +210,7 @@
     <div id="m" style="margin-top: 10px; margin-left: 100px; padding: 10px; width: 60px; background: rgb(109, 105, 105);"><button onclick="more()" style="background: none;">MORE</button></div>
   
   </div>
-  <!-- <script>
-    document.cookie ="cmtpage=2"
-  </script> -->
+ 
   {% endif %}
 
 
@@ -326,7 +324,7 @@ var tNew = document.createElement('div');
 <div class="user-msg">
 <h2>${data.fields.u_name}</h2>
 <h6 style="font-style: italic;">${data.fields.cmt_date}</h6>
-<div style="margin-right: 20px; margin-top: -20px;">${data.fields.u_msg}</div>
+<div style="margin-right: 20px; margin-top: -20px;">${data.fields.cmt_msg}</div>
 
 <form class="cmt_reply" method="POST">
           {% csrf_token%}

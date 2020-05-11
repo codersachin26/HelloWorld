@@ -190,7 +190,7 @@ def cmt_reply(request,blog_id):
             senderID = request.user
             mk_notification.receiverID = receiverID
             mk_notification.sender  =  senderID
-            mk_notification.msg = request.user.username.upper()+' reply on your comment "'+cmt.u_msg+'" on blog '+article.title+'"'+request.POST['cmt-msg']+'"'
+            mk_notification.msg = request.user.username.upper()+' reply on your comment "'+cmt.cmt_msg+'" on blog '+article.title+'"'+request.POST['cmt-msg']+'"'
             mk_notification.save()
     
             return JsonResponse(data,safe=False)
@@ -296,8 +296,8 @@ def more(request,blog_id):
             usercmt = {
                 'profile_pic':str(cmt.user.profile_pic),
                 'username': cmt.u_name,
-                'cmtmsg': cmt.u_msg,
-                'blog_id': cmt.article.id,
+                'cmtmsg': cmt.cmt_msg,
+                'blog_id': cmt.blog.id,
                 'cmt_date' :  str(cmt.cmt_date),
                 'id' : cmt.id
             }
