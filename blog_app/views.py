@@ -96,7 +96,15 @@ def user_login(request):
             login(request,user)
             return redirect('/')
         else:
-            return HttpResponse('you are not log in')
+            if MyUser.objects.filter(email=email).exists():
+                form = LoginForm
+                error = 'Wrong Password!'
+                return render(request,'login.html',{'form':form, 'error':error})
+                
+            else:
+                form = LoginForm
+                error = 'INVALID USER!'
+                return render(request,'login.html',{'form':form, 'error':error})
     form = LoginForm
     return render(request,'login.html',{'form':form})
 
