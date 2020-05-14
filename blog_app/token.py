@@ -8,4 +8,4 @@ def generate_token():
     all.extend(list(alphabets))
     all.extend(list(digits))
     token = shuffle(all_character)
-    return token
+    return token[0:5]
