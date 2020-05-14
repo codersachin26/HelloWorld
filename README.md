@@ -51,4 +51,3 @@ Superuser created successfully.
 Go to the web browser and visit http://localhost:8000/admin
  
  
-
