@@ -7,5 +7,6 @@ def generate_token():
     all_character = []
     all.extend(list(alphabets))
     all.extend(list(digits))
-    token = shuffle(all_character)
-    return token[0:5]
+    shuffle_character = shuffle(all_character)
+    token = "".join(shuffle_character[0:6])
+    return token
