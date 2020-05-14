@@ -14,12 +14,12 @@ from datetime import datetime
 
 
 
-# Create your views here.
+# Home page
 
 def index(request):
     try:
         blogs = Blog.objects.all().order_by('-id')
-        for blog in blogs:
+        for blog in blogs:                 # find latest accessible blog
             if blog.accessible:
                 new_blog = blog
                 break
