@@ -8,6 +8,7 @@ from django.core import serializers
 from django.core.mail import send_mail
 from blog.settings import EMAIL_HOST_USER
 from datetime import datetime
+from .token import generate_token
 
 
 
@@ -360,8 +361,9 @@ def reset_user_password(request):
     if request.method == 'POST':
         user =  Reset_PassWord_Form(request.POST)
         if MyUser.objects.filter(email=user['email'].value()).exists():
+            token = generate_token()
             subject = 'Reset Password'
-            message = "Don't share this code to anyone!  \n CODE = 8888 "
+            message = "Don't share this code to anyone!  \n CODE = {user_token} ".format(user_token=token)
             recepient = str(user['email'].value())
             new_token = Token()
             tokenID = int(datetime.utcnow().timestamp())
