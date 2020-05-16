@@ -18,6 +18,9 @@ class LoginForm(forms.ModelForm):
 
 
 class ArticleForm(forms.ModelForm):
+    # title = forms.CharField(max_length=50)
+    # img = forms.FileField()
+    # category = 
     class Meta:
         model = Blog
         fields = ['title','thumbnail','category','content']

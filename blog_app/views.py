@@ -20,6 +20,7 @@ from .token import generate_token
 def index(request):
     try:
         blogs = Blog.objects.all().order_by('-id')
+        new_blog = object()
         for blog in blogs:                  # find latest accessible blog
             if blog.accessible:
                 new_blog = blog

@@ -63,7 +63,7 @@ class Blog(models.Model):
     thumbnail = models.ImageField(upload_to='thumbnail_img/')
     upload_date = models.DateTimeField(blank=True,default=timezone.now)
     category = models.CharField(max_length=30,default="Other",choices=type)
-    content = models.CharField(max_length=5000)
+    content = models.TextField(max_length=5000)
     accessible = models.BooleanField(blank=True,default=False)
 
     def __str__(self):
