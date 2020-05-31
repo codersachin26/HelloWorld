@@ -1,5 +1,6 @@
-HelloWorld-Blog web app 
-About
+HelloWorld-Blog web app
+.
+    About
 The objective of the “HelloWorld “ website is to provide a system which manages blogs for readers and bloggers. In this Website we have three types of users, the first one is Admin. Admin have all the privileges related to the website and second one is User.  The User can read blogs and like blogs and comments on blogs. The last one is that the Author has more privileges than the User. Author can write blogs and also see how many people read,comment,like their blogs  
 HelloWorld website is user friendly and easy to use. All the important data will be stored in the database and it avoids any miscalculation.
  
