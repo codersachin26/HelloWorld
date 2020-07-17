@@ -19,8 +19,8 @@ User has his own blog page, where he can add new blog posts if User have Author 
 * $ .\env\Scripts\activate
 ## Install dependencies:
 * $ pip install -r requirements.txt
-* How to run
-# Default
+## How to run
+# make migrations
 You can run the application from the command line with manage.py. Go to the root folder of the application.
 Run makemigrations:
 * $ python manage.py makemigrations
