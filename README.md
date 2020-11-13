@@ -15,8 +15,8 @@ There is a login and registration functionality included.
 * $ pip install -r requirements.txt
 
 ### make migrations
-You can run the application from the command line with manage.py. Go to the root folder of the application.
-Run makemigrations:
+* You can run the application from the command line using manage.py file
+  Go to the root folder of the application and Run makemigrations commmand
 * $ python manage.py makemigrations
  
 ### Run migrations:
