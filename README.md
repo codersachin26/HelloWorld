@@ -1,33 +1,30 @@
-HelloWorld-Blog web app
+# Application Name:- HelloWorld
        
-**About**
+## About:-
 
 <b> HelloWorld </b> is a blog web apllication In this Web apllication. The User can read,like and comment on blogs.
  And User can also create Author account. Author can write blogs and also see how many people comment,like their blogs  
 
 I made this web appliaction using Python 3.7.4 + Django and the database is SQLite. 
 There is a login and registration functionality included.
+
+# How To Use?
  
 ## Prerequisites:-
-# [Optional] Install virtual environment:
-* $ python -m virtualenv env
-* [Optional] Activate virtual environment:
-# On macOS and Linux:
-* $ source env/bin/activate
-# On Windows:
+### On Windows:
 * $ .\env\Scripts\activate
-## Install dependencies:
+### Install dependencies:
 * $ pip install -r requirements.txt
-## How to run
-# make migrations
+
+### make migrations
 You can run the application from the command line with manage.py. Go to the root folder of the application.
 Run makemigrations:
 * $ python manage.py makemigrations
  
-# Run migrations:
+### Run migrations:
 * $ python manage.py migrate
  
-# Run createsuperuser:
+### Run createsuperuser:
 * $ python manage.py createsuperuser (name superuser)
 * Give Email and password
 * Run server on port 8000:
