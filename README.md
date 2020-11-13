@@ -2,12 +2,11 @@ HelloWorld-Blog web app
        
 **About**
 
-<b> HelloWorld </b> is a blog web apllication In this Web apllication we have three types of users, the first one is Admin. Admin have all the privileges related to the website and second one is User.  The User can read blogs and like blogs and comments on blogs. The last one is that the Author has more privileges than the User. Author can write blogs and also see how many people comment,like their blogs  
-HelloWorld website is user friendly and easy to use. All the important data will be stored in the database and it avoids any miscalculation.
+<b> HelloWorld </b> is a blog web apllication In this Web apllication. The User can read,like and comment on blogs.
+ And User can also create Author account. Author can write blogs and also see how many people comment,like their blogs  
 
-It was made using Python 3.7.4 + Django and the database is SQLite. 
+I made this web appliaction using Python 3.7.4 + Django and the database is SQLite. 
 There is a login and registration functionality included.
-User has his own blog page, where he can add new blog posts if User have Author account. Every authenticated user can comment on posts made by other users. Home page is a paginated list of all posts. Non-authenticated users can see all blog posts, but cannot add new posts or comment.
  
 ## Prerequisites:-
 # [Optional] Install virtual environment:
