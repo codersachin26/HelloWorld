@@ -11,8 +11,6 @@ There is a login and registration functionality included.
 # How To Use?
  
 ## Prerequisites:-
-### On Windows:
-* $ .\env\Scripts\activate
 ### Install dependencies:
 * $ pip install -r requirements.txt
 
@@ -29,23 +27,10 @@ Run makemigrations:
 * Give Email and password
 * Run server on port 8000:
 * $ python manage.py runserver 8000 
- Goto browser on localhost port 8000:
+ Go to the web browser on localhost address:
    http://localhost:8000
  
  
  
- 
- 
-## Django Admin
-It is possible to add additional admin user who can login to the admin site. Run the following command:
-* $ python manage.py createsuperuser
-Enter your desired email and press enter.
-email: admin_email
- 
-The final step is to enter your password. You will be asked to enter your password twice, the second time as a confirmation of the first.
-Password: **********
-Password (again): *********
-Superuser created successfully.
-Go to the web browser and visit http://localhost:8000/admin
  
  
